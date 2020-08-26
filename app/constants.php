@@ -6,5 +6,6 @@ define('CLASSES', DIR . DS . 'Classes');
 define('CONTROLLERS', DIR . DS . 'Controllers');
 define('MODELS', DIR . DS . 'Models');
 define('VIEWS', DIR . DS . 'Views');
+define('EXCEPTIONS', DIR . DS . 'Exceptions');
 
-define('AUTOLOAD_CLASSES', array(CLASSES, CONTROLLERS, MODELS, VIEWS));
+define('AUTOLOAD_CLASSES', array(CLASSES, CONTROLLERS, MODELS, VIEWS, EXCEPTIONS));

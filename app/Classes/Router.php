@@ -16,11 +16,11 @@ class Router {
 
     public function getResponse() {
         if (!isset($this->routes[$this->path])) {
-            die("Route not found");
+            throw new RouteNotFoundException('Route not found ' . $this->path);
         }
 
         if (!in_array($_SERVER['REQUEST_METHOD'], $this->methods[$this->path])) {
-            die('Method not allowed');
+            throw new MethodNotAllowedException('Method is not allowed: ' . $_SERVER['REQUEST_METHOD']);
         }
 
         return $this->routes[$this->path];

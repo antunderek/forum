@@ -26,4 +26,16 @@ $container['db'] = function ($c) {
     );
 };
 
-var_dump($container->db);
+//var_dump($container->db);
+
+$app->get('/', function() {
+    echo 'Home';
+});
+
+$app->post('/welcome', function() {
+    echo 'Welcome';
+});
+
+$app->get('/', [HomeController::class, 'index']);
+
+$app->run();
