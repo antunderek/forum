@@ -2,13 +2,21 @@
 
 class HomeController {
     protected $homeview;
+    protected $db;
 
-    public function index() {
-        $homeview = new HomeView;
-        $homeview->renderPage();
+    public function __construct(PDO $db) {
+        $this->db = $db;
+        $this->homeview = new HomeView;
     }
 
-    public function passValue($value) {
-        return $value;
+    public function index() {
+        $homeview = new HomeView();
+        $homeview->renderPage();
+        $this->getData($homeview->getPost());
+    }
+
+    public function getData($postData) {
+        $model = new HomeModel($this->db);
+        $model->addData($postData);
     }
 }
