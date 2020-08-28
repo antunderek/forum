@@ -1,5 +1,5 @@
 <?php
-
+// treba renderati view
 class HomeController {
     protected $homeview;
     protected $db;

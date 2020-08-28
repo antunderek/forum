@@ -27,8 +27,8 @@ $container['db'] = function ($c) {
 };
 
 //var_dump($container->db);
-$container->db;
-
+//$container->db;
+/*
 $app->get('/', function() {
     echo 'Home';
 });
@@ -36,9 +36,9 @@ $app->get('/', function() {
 $app->post('/welcome', function() {
     echo 'Welcome';
 });
-
+*/
 //$app->map('/', [HomeController::class, 'index'], ['GET', 'POST']);
-$app->map('/', [new HomeController($container->db), 'index'], ['GET', 'POST']);
+//$app->map('/', [new HomeController($container->db), 'index'], ['GET', 'POST']);
 
 $app->run();
 

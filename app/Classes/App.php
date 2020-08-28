@@ -1,5 +1,5 @@
 <?php
-
+//parse url
 class App
 {
     protected $container;
@@ -32,10 +32,12 @@ class App
 
     public function run() {
         $router = $this->container->router;
-        $router->setPath($_SERVER['PATH_INFO'] ?? '/');
+        $router->setPath($_SERVER['REQUEST_URI'] ?? '/');
 
         try {
-            $response = $router->getResponse();
+            $router->findPath();
+            //$response = $router->getResponse();
+            $response = $router->getPath();
         } catch (RouteNotFoundException $e) {
             echo "Route not found";
             die();
@@ -54,6 +56,7 @@ class App
             }
             return call_user_func($callable);
         }*/
-        return $callable();
+       $prep = [new $callable['controller']($this->container->db), $callable['method']];
+       return $prep();//$callable();
    }
 }
