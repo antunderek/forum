@@ -10,6 +10,9 @@ class HomeModel {
     }
 
     public function addData($postdata) {
+        if (!isset($postdata)) {
+            return;
+        }
         $statement = $this->db->prepare(
     "INSERT INTO users (username, password) VALUES (:user, :pass)"
         );

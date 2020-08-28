@@ -11,6 +11,7 @@ class HomeController {
 
     public function index() {
         $homeview = new HomeView();
+       // echo $homeview->render('/var/www/html/forum/app/Views/html/home.php');
         $homeview->renderPage();
         $this->getData($homeview->getPost());
     }
