@@ -36,20 +36,8 @@ class Router {
         if (count($temp) > 3) {
             throw new RouteNotFoundException('Route not found');
         }
-        $this->controller = isset($temp[1]) ? ucfirst(strtolower(trim($temp[1])) . 'Controller') : 'Home';
-        $this->method = isset($temp[2]) ? strtolower(trim($temp[2])) : 'index';
-
-        if (isset($temp[1])) {
-            $this->controller = 'Home';
-        } else {
-            $this->controller = ucfirst(strtolower(trim($temp[1])) . 'Controller');
-        }
-
-        if (isset($temp[2]) || trim($temp[2]) === '' ) {
-            $this->method = 'index';
-        } else {
-            $this->method = strtolower(trim($temp[2]));
-        }
+        $this->controller = (isset($temp[1]) && $temp[1] !== '') ? ucfirst(strtolower(trim($temp[1])) . 'Controller') : 'HomeController';
+        $this->method = (isset($temp[2]) && $temp[2] !== '') ? strtolower(trim($temp[2])) : 'index';
     }
 
     public function getPath() {
