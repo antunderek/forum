@@ -1,5 +1,12 @@
 <?php
-// treba renderati view
+
+namespace controllers;
+
+use PDO;
+use views\HomeView;
+use models\HomeModel;
+use classes\User;
+
 class HomeController {
     protected $homeview;
     protected $db;
@@ -11,13 +18,17 @@ class HomeController {
 
     public function index() {
         $homeview = new HomeView();
-        echo $homeview->render('/var/www/html/forum/app/Views/html/home.php');
-        //$homeview->renderPage();
-        $this->getData($homeview->getPost());
+        $homeview->renderPage();
+        //$this->getData($homeview->getPost());
+        $this->getData($this->getParams());
     }
 
     public function getData($postData) {
         $model = new HomeModel($this->db);
         $model->addData($postData);
+    }
+
+    private function getParams() {
+        return isset($_POST['user'], $_POST['pass']) ? new User($_POST['user'], $_POST['pass']) : null;
     }
 }

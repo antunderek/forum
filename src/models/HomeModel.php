@@ -1,13 +1,10 @@
 <?php
 
-class HomeModel {
-    protected $db;
-    //protected $postdata;
+namespace models;
 
-    public function __construct(PDO $db) {
-        $this->db = $db;
-        //$this->postdata = $postdata;
-    }
+use classes\User;
+
+class HomeModel extends Model {
 
     public function addData($postdata) {
         if (!isset($postdata)) {
@@ -22,5 +19,9 @@ class HomeModel {
                 ':pass' => $postdata->getPassword()
             )
         );
+    }
+
+    public function getPost() {
+        return (isset($_POST['user'], $_POST['pass']) || !in_array('', $_POST)) ? new User(trim($_POST['user']), trim($_POST['pass'])) : null;
     }
 }

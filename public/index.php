@@ -1,20 +1,15 @@
 <?php
 
-require_once('app/loader.php');
-require_once('app/constants.php');
+use core\App;
+
+require_once('../src/core/autoload.php');
 
 $app = new App;
 $container = $app->getContainer();
 
+
 $container['config'] = function () {
-    return [
-        'db_driver' => 'mysql',
-        'db_host' => '127.0.0.1',
-        'db_port' => '3306',
-        'db_name' => 'forum',
-        'db_user' => 'inchoo',
-        'db_pass' => 'password',
-    ];
+    return include '../config/dbconf.php';
 };
 
 $container['db'] = function ($c) {

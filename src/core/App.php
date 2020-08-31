@@ -1,5 +1,11 @@
 <?php
-//parse url
+
+namespace core;
+
+use core\Container;
+use exceptions\RouteNotFoundException;
+use exceptions\MethodNotAllowedException;
+
 class App
 {
     protected $container;
@@ -24,7 +30,6 @@ class App
 
         try {
             $router->findPath();
-            //$response = $router->getResponse();
             $response = $router->getPath();
         } catch (RouteNotFoundException $e) {
             echo "Route not found";
@@ -38,6 +43,7 @@ class App
    }
 
    protected function process($callable) {
-       return [new $callable['controller']($this->container->db), $callable['method']];
+       $prep =  [new $callable['controller']($this->container->db), $callable['method']];
+       return $prep();
    }
 }

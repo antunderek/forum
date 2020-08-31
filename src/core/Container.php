@@ -1,6 +1,8 @@
 <?php
 
+namespace core;
 
+use ArrayAccess;
 
 class Container implements ArrayAccess {
     protected $items = [];

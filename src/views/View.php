@@ -1,5 +1,7 @@
 <?php
 
+namespace views;
+
 abstract class View {
     public function render(string $template) {
         ob_start();

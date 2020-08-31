@@ -1,33 +1,18 @@
 <?php
 
-class Router {
-    const CONTROLLERS_PATH = '/var/www/html/forum/app/Controllers/';
-    protected $path;
-    protected $routes = [];
-    protected $methods = [];
+namespace core;
 
+use exceptions\MethodNotAllowedException;
+use exceptions\RouteNotFoundException;
+
+class Router {
+    const CONTROLLERS_PATH = '/var/www/html/forum/src/controllers/';
+    protected $path;
     protected $controller;
     protected $method;
 
     public function setPath($path = '/') {
         $this->path = $path;
-    }
-
-    public function addRoute($uri, $handler, array $methods = ['GET']) {
-        $this->routes[$uri] = $handler;
-        $this->methods[$uri] = $methods;
-    }
-
-    public function getResponse() {
-        if (!isset($this->routes[$this->path])) {
-            throw new RouteNotFoundException('Route not found ' . $this->path);
-        }
-
-        if (!in_array($_SERVER['REQUEST_METHOD'], $this->methods[$this->path])) {
-            throw new MethodNotAllowedException('Method is not allowed: ' . $_SERVER['REQUEST_METHOD']);
-        }
-
-        return $this->routes[$this->path];
     }
 
     public function findPath() {
@@ -44,8 +29,9 @@ class Router {
         $controllerpath = self::CONTROLLERS_PATH . $this->controller;
         $controllerfullpath = $controllerpath . '.php';
         if (!file_exists($controllerfullpath)) {
-            throw new RouteNotFoundException('Route not found ' . $this->path);
+            throw new RouteNotFoundException('Route not found ' . $controllerfullpath);
         }
+        $this->controller= '\\controllers\\' . $this->controller;
         if (!method_exists($this->controller, $this->method)) {
             throw new MethodNotAllowedException();
         }
