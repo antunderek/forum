@@ -2,21 +2,21 @@
 
 namespace controllers;
 
-use views\SignupView;
+use views\LoginView;
 use models\UserModel;
 
-class SignupController extends Controller {
+class LoginController extends Controller {
     public function index() {
-        $homeview = new SignupView();
-        $homeview->renderPage();
+        $loginview = new LoginView();
+        $loginview->renderPage();
     }
 
     public function passDataToModel($postData) {
         $model = new UserModel($this->db);
-        $model->addUser($postData);
+        $model->loginUser($postData);
     }
 
-    public function register() {
+    public function signin() {
         $this->passDataToModel($this->getParams());
     }
 }

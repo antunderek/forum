@@ -2,47 +2,81 @@
 
 namespace models;
 
+//use Cassandra\Statement;
 use classes\User;
+use PDO;
 
 class UserModel extends Model {
 
-    private function prepareRegisterData($postdata) {
-        //object user
-    }
-
-    private function registerDataValid($postdata): bool {
-        if (!isset($postdata)) {
+    private function dataValid($postdata): bool {
+        if (!isset($postdata) || empty($postdata)) {
             return false;
         }
-
         foreach ($postdata as $data) {
-            echo trim($data);
             if (!isset($data) || empty(trim($data))) {
                 return false;
             }
         }
-
         return true;
     }
 
+    private function createUser($postdata, $newuser = false) {
+        $username = isset($postdata['username']) ? trim($postdata['username']) : null;
+        $password = $newuser ? password_hash(trim($postdata['password']), PASSWORD_ARGON2ID) : trim($postdata['password']);
+        return new User(trim($postdata['email']), $password, $username);
+    }
+
     public function addUser($postdata) {
-        var_dump($postdata);
-        if (!$this->registerDataValid($postdata)) {
+        if (!$this->dataValid($postdata)) {
             return;
         }
-        $postdata = $this->prepareRegisterData($postdata);
-        var_dump($postdata);
+        $userdata = $this->createUser($postdata, true);
 
         $statement = $this->db->prepare(
-    "INSERT INTO users (username, password, email) VALUES (:user, :pass, :email)"
+    "INSERT INTO users (email, password, username) VALUES (:email, :password, :username)"
         );
         $statement->execute(
             array (
-                ':user' => $postdata->getUser(),
-                ':pass' => $postdata->getPassword(),
-                ':email' => $postdata->getEmail(),
+                ':username' => $userdata->getUsername(),
+                ':password' => $userdata->getPassword(),
+                ':email' => $userdata->getEmail(),
             )
         );
+    }
+
+    private function findUserByEmail(User $user) {
+        $statement = $this->db->prepare(
+            'SELECT email, password, username FROM users WHERE email=:email'
+        );
+        $statement->execute(
+            [
+                ':email' => $user->getEmail()
+            ]
+        );
+        $statement->setFetchMode(PDO::FETCH_OBJ, 'User');
+        $result = $statement->fetch();
+        $user = $this->createUser($result);
+
+        return $user;
+    }
+
+    public function loginUser($params) {
+        if (!$this->dataValid($params)) {
+            return;
+        }
+
+        $userdata = $this->createUser($params);
+
+        $dbuser = $this->findUserByEmail($userdata);
+
+        if (!$dbuser) {
+            echo 'wrong password or username';
+            return;
+        }
+
+        if (password_verify($userdata->getPassword(), $dbuser->getPassword())) {
+            echo 'user logged in';
+        }
     }
 
     public function removeUser() {
@@ -50,10 +84,4 @@ class UserModel extends Model {
 
     public function changeUserData() {
     }
-
-    /*
-    public function getPost() {
-        return (isset($_POST['user'], $_POST['pass']) || !in_array('', $_POST)) ? new User(trim($_POST['user']), trim($_POST['pass'])) : null;
-    }
-    */
 }

@@ -3,26 +3,26 @@
 namespace classes;
 
 class User {
-    protected $user;
+    protected $username;
     protected $password;
     protected $email;
     protected $administrator;
 
-    public function __construct($user, $password, $email) {
-        $this->user = $user;
+    public function __construct($email, $password, $user = null) {
+        $this->username = $user;
         $this->password = $password;
         $this->email = $email;
         //$this->administrator = $administrator;
     }
 
-    public function getUser()
+    public function getUsername()
     {
-        return $this->user;
+        return $this->username;
     }
 
-    public function setUser($user): void
+    public function setUsername($username): void
     {
-        $this->user = $user;
+        $this->username = $username;
     }
 
     public function getPassword()

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <body>
-<form action="" method="POST">
+<form action="signup/register" method="POST">
     <label for="name">Username</label>
     <br>
-    <input type="text" name="user">
+    <input type="text" name="username">
     <br>
     <label for="password">Password</label>
     <br>
