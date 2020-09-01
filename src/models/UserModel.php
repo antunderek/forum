@@ -31,7 +31,6 @@ class UserModel extends Model {
             return;
         }
         $userdata = $this->createUser($postdata, true);
-
         $statement = $this->db->prepare(
     "INSERT INTO users (email, password, username) VALUES (:email, :password, :username)"
         );
@@ -44,16 +43,16 @@ class UserModel extends Model {
         );
     }
 
-    private function findUserByEmail(User $user) {
+    private function findUserByEmail(string $email) {
         $statement = $this->db->prepare(
             'SELECT email, password, username FROM users WHERE email=:email'
         );
         $statement->execute(
             [
-                ':email' => $user->getEmail()
+                ':email' => $email
             ]
         );
-        $statement->setFetchMode(PDO::FETCH_OBJ, 'User');
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $statement->fetch();
         $user = $this->createUser($result);
 
@@ -64,18 +63,14 @@ class UserModel extends Model {
         if (!$this->dataValid($params)) {
             return;
         }
-
         $userdata = $this->createUser($params);
-
-        $dbuser = $this->findUserByEmail($userdata);
-
+        $dbuser = $this->findUserByEmail($userdata->getEmail());
         if (!$dbuser) {
             echo 'wrong password or username';
             return;
         }
-
         if (password_verify($userdata->getPassword(), $dbuser->getPassword())) {
-            echo 'user logged in';
+            //$_SESSION['name'] = $dbuser->getUsername();
         }
     }
 

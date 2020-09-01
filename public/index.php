@@ -1,12 +1,12 @@
 <?php
 
 use core\App;
-
 require_once('../src/core/autoload.php');
+
+session_start();
 
 $app = new App;
 $container = $app->getContainer();
-
 
 $container['config'] = function () {
     return include '../config/dbconf.php';
