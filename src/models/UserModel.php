@@ -2,8 +2,8 @@
 
 namespace models;
 
-//use Cassandra\Statement;
 use classes\User;
+use classes\SessionWrapper;
 use PDO;
 
 class UserModel extends Model {
@@ -28,6 +28,7 @@ class UserModel extends Model {
 
     public function addUser($postdata) {
         if (!$this->dataValid($postdata)) {
+            SessionWrapper::set('register_error', 'Please input data in all fields.');
             return;
         }
         $userdata = $this->createUser($postdata, true);
@@ -55,22 +56,22 @@ class UserModel extends Model {
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $statement->fetch();
         $user = $this->createUser($result);
-
         return $user;
     }
 
     public function loginUser($params) {
         if (!$this->dataValid($params)) {
+            SessionWrapper::set('login_error', 'Please input data in all fields.');
             return;
         }
         $userdata = $this->createUser($params);
         $dbuser = $this->findUserByEmail($userdata->getEmail());
-        if (!$dbuser) {
+        if (!isset($dbuser) || !password_verify($userdata->getPassword(), $dbuser->getPassword())) {
             echo 'wrong password or username';
-            return;
+            SessionWrapper::set('login_error', 'Wrong email or password');
         }
         if (password_verify($userdata->getPassword(), $dbuser->getPassword())) {
-            $_SESSION['name'] = $dbuser->getUsername();
+            SessionWrapper::set('name', $dbuser->getUsername());
         }
     }
 

@@ -4,20 +4,32 @@ namespace controllers;
 
 use views\LoginView;
 use models\UserModel;
+use classes\SessionWrapper;
 
 class LoginController extends Controller {
     public function index() {
         $loginview = new LoginView();
-        //$loginview->renderPage();
         $loginview->renderPage('signin.php');
+        if ($this->checkErrors()) {
+            //Dodati u html i posebno renderati?
+            echo SessionWrapper::get('login_error');
+            SessionWrapper::end('login_error');
+        }
     }
 
-    public function passDataToModel($postData) {
+    private function passDataToModel($postData) {
         $model = new UserModel($this->db);
         $model->loginUser($postData);
     }
 
+    private function checkErrors() {
+        return SessionWrapper::has('login_error');
+    }
+
     public function signin() {
         $this->passDataToModel($this->getParams());
+        if ($this->checkErrors()) {
+            header('Location: /login');
+        }
     }
 }

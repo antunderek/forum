@@ -27,12 +27,6 @@ class App
 
     public function run() {
         $router = $this->container->router;
-       /* $userUrl =$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        if ($userUrl) {
-
-        }
-        header("Location: $userUrl");
-       */
         $router->setPath($_SERVER['REQUEST_URI'] ?? '/');
 
         try {
@@ -50,8 +44,7 @@ class App
    }
 
    protected function process($callable) {
-//       $prep =  [new $callable['controller']($this->container->db), $callable['method']];
-       $prep =  [new $callable['controller'](DatabaseInstance::getDb()), $callable['method']];
+       $prep =  [new $callable['controller']($this->container->db), $callable['method']];
        return $prep();
    }
 }
