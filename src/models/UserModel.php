@@ -70,7 +70,7 @@ class UserModel extends Model {
             return;
         }
         if (password_verify($userdata->getPassword(), $dbuser->getPassword())) {
-            //$_SESSION['name'] = $dbuser->getUsername();
+            $_SESSION['name'] = $dbuser->getUsername();
         }
     }
 

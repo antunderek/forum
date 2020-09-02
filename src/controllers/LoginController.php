@@ -8,7 +8,8 @@ use models\UserModel;
 class LoginController extends Controller {
     public function index() {
         $loginview = new LoginView();
-        $loginview->renderPage();
+        //$loginview->renderPage();
+        $loginview->renderPage('signin.php');
     }
 
     public function passDataToModel($postData) {

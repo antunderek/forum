@@ -16,13 +16,43 @@ class Router {
     }
 
     public function findPath() {
-        $temp = parse_url($this->path);
-        $temp = explode('/', $temp['path']);
-        if (count($temp) > 3) {
+        $urlParts = parse_url($this->path);
+        $urlParts = explode('/', $urlParts['path']);
+
+        if (!$this->validUserUrl($urlParts)) {
+            //404
             throw new RouteNotFoundException('Route not found');
         }
-        $this->controller = (isset($temp[1]) && $temp[1] !== '') ? ucfirst(strtolower(trim($temp[1])) . 'Controller') : 'HomeController';
-        $this->method = (isset($temp[2]) && $temp[2] !== '') ? strtolower(trim($temp[2])) : 'index';
+
+        $this->removeTrailingSlashUrl($urlParts);
+
+        $this->controller = (isset($urlParts[1]) && $urlParts[1] !== '') ? ucfirst(strtolower(trim($urlParts[1])) . 'Controller') : 'HomeController';
+        $this->method = (isset($urlParts[2]) && $urlParts[2] !== '') ? strtolower(trim($urlParts[2])) : 'index';
+    }
+
+    private function removeTrailingSlashUrl($urlParts) {
+        if (count($urlParts) < MAX_URL_SIZE && $urlParts[1] === '') {
+            return;
+        }
+
+        if (substr($this->path, -1) === '/') {
+            $fixedUrl = rtrim($_SERVER['REQUEST_URI'], '/');
+            header("Location: $fixedUrl");
+        }
+    }
+
+    private function validUserUrl($urlParts) {
+        if (count($urlParts) > MAX_URL_SIZE) {
+            return false;
+        }
+
+        if (isset($urlParts[1], $urlParts[2])) {
+            if ($urlParts[1] === '' && $urlParts[2] !== '') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getPath() {

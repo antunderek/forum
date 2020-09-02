@@ -8,7 +8,7 @@ use models\UserModel;
 class SignupController extends Controller {
     public function index() {
         $homeview = new SignupView();
-        $homeview->renderPage();
+        $homeview->renderPage('signup.php');
     }
 
     public function passDataToModel($postData) {

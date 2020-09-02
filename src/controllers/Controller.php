@@ -11,7 +11,7 @@ abstract class Controller
     protected $paramshandler;
 
     //interface za view i ostale, kako bi pristupili svim view class
-    public function __construct(PDO $db)
+    public function __construct($db)
     {
         $this->db = $db;
         $this->paramshandler = new ParamsHandler();
