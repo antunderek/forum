@@ -7,3 +7,7 @@ CREATE TABLE users (
     UNIQUE KEY (username),
     UNIQUE KEY (email)
 );
+
+ALTER TABLE users DROP password;
+
+
