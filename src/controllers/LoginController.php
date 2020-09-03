@@ -31,5 +31,8 @@ class LoginController extends Controller {
         if ($this->checkErrors()) {
             header('Location: /login');
         }
+        else {
+            header('Location: /');
+        }
     }
 }

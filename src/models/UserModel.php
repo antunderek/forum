@@ -32,21 +32,32 @@ class UserModel extends Model {
             return;
         }
         $userdata = $this->createUser($postdata, true);
-        $statement = $this->db->prepare(
-    "INSERT INTO users (email, password, username) VALUES (:email, :password, :username)"
+        $addUserStatement = $this->db->prepare(
+            "INSERT INTO users (email, username) VALUES (:email, :username)"
         );
-        $statement->execute(
+        $addPasswordStatement = $this->db->prepare(
+            "INSERT INTO passwords (password, user_id) VALUES (:password, (SELECT id FROM users WHERE username=:username))"
+        );
+
+        $addUserStatement->execute(
             array (
                 ':username' => $userdata->getUsername(),
-                ':password' => $userdata->getPassword(),
                 ':email' => $userdata->getEmail(),
             )
         );
+
+        $addPasswordStatement->execute(
+            array (
+                ':username' => $userdata->getUsername(),
+                ':password' => $userdata->getPassword(),
+            )
+        );
+
     }
 
     private function findUserByEmail(string $email) {
         $statement = $this->db->prepare(
-            'SELECT email, password, username FROM users WHERE email=:email'
+            "SELECT users.email, passwords.password, users.username FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.email=:email;"
         );
         $statement->execute(
             [
