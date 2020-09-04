@@ -20,6 +20,18 @@ class UserModel extends Model {
         return true;
     }
 
+    private function tempStoreUserInput($postdata) {
+        $temp_data = null;
+        foreach ($postdata as $key => $data) {
+            if (isset($data) && $key !== 'password') {
+                $temp_data[$key] = $data;
+            }
+        }
+        if (isset($temp_data)) {
+            SessionWrapper::set('temp_data', $temp_data);
+        }
+    }
+
     private function createUser($postdata, $newuser = false) {
         $username = isset($postdata['username']) ? trim($postdata['username']) : null;
         $password = $newuser ? password_hash(trim($postdata['password']), PASSWORD_ARGON2ID) : trim($postdata['password']);
@@ -28,6 +40,7 @@ class UserModel extends Model {
 
     public function addUser($postdata) {
         if (!$this->dataValid($postdata)) {
+            $this->tempStoreUserInput($postdata);
             SessionWrapper::set('register_error', 'Please input data in all fields.');
             return;
         }
@@ -72,13 +85,14 @@ class UserModel extends Model {
 
     public function loginUser($params) {
         if (!$this->dataValid($params)) {
+            $this->tempStoreUserInput($params);
             SessionWrapper::set('login_error', 'Please input data in all fields.');
             return;
         }
         $userdata = $this->createUser($params);
         $dbuser = $this->findUserByEmail($userdata->getEmail());
         if (!isset($dbuser) || !password_verify($userdata->getPassword(), $dbuser->getPassword())) {
-            echo 'wrong password or username';
+            $this->tempStoreUserInput($params);
             SessionWrapper::set('login_error', 'Wrong email or password');
         }
         if (password_verify($userdata->getPassword(), $dbuser->getPassword())) {

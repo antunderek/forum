@@ -7,7 +7,6 @@ use models\ThreadModel;
 
 class HomeController extends Controller
 {
-
     public function index()
     {
         $threads = $this->getDataFromModel();

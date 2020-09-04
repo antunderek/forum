@@ -11,10 +11,10 @@ class SignupController extends Controller {
         $homeview = new SignupView();
         $homeview->renderPage('signup.php');
         if ($this->checkErrors()) {
-            //Dodati u html i posebno renderati?
             echo SessionWrapper::get('register_error');
             SessionWrapper::end('register_error');
         }
+        SessionWrapper::end('temp_data');
     }
 
     private function passDataToModel($postData) {
@@ -26,10 +26,13 @@ class SignupController extends Controller {
         return SessionWrapper::has('register_error');
     }
 
-    public function register() {
+    public function register()
+    {
         $this->passDataToModel($this->getParams());
         if ($this->checkErrors()) {
             header('Location: /signup');
+        } else {
+            header('Location: /login');
         }
     }
 }

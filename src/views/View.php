@@ -2,6 +2,8 @@
 
 namespace views;
 
+use classes\SessionWrapper;
+
 abstract class View {
     private function render(string $template) {
         $template = BP . 'templates/' . $template;

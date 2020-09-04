@@ -11,10 +11,10 @@ class LoginController extends Controller {
         $loginview = new LoginView();
         $loginview->renderPage('signin.php');
         if ($this->checkErrors()) {
-            //Dodati u html i posebno renderati?
             echo SessionWrapper::get('login_error');
             SessionWrapper::end('login_error');
         }
+        SessionWrapper::end('temp_data');
     }
 
     private function passDataToModel($postData) {

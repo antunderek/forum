@@ -1,8 +1,14 @@
 <h1>Homepage</h1>
-<a href="/login">Login</a>
-<a href="/signup">Signup</a>
+<?php if (\classes\SessionWrapper::has('name')): ?>
+    <h2>Logged in as: <?= \classes\SessionWrapper::get('name')?></h2>
+    <br>
+    <a href="/logout">Logout</a>
+<?php else: ?>
+    <a href="/login">Login</a>
+    <a href="/signup">Signup</a>
+<?php endif;?>
 
-<table style="border: solid 1px; width: 50%">
+<table border="1">
     <tr>
         <th>Thread</th>
         <th>Description</th>
