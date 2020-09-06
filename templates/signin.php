@@ -1,11 +1,12 @@
 <form action="login/signin" method="POST">
     <label for="email">Email</label>
     <br>
-    <input type="email" name="email" value="<?= \classes\SessionWrapper::has('temp_data') ? \classes\SessionWrapper::get('temp_data', 'email') : ''?>">
+    <input type="email" name="email" value="<?= $this->rememberedEmail() ?>">
     <br>
     <label for="password">Password</label>
     <br>
     <input type="password" name="password">
     <br>
+    <p><?= $this->checkLoginError() ?></p>
     <input type="submit">
 </form>

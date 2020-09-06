@@ -3,16 +3,22 @@
 namespace controllers;
 
 use classes\SessionWrapper;
-use
+use views\AdminView;
+use models\ThreadModel;
 
 class AdminController extends Controller {
     public function index() {
-        $adminview = new AdminView();
-        $adminview->renderPage('admin.php');
-        if ($this->checkErrors()) {
-            echo SessionWrapper::get('login_error');
-            SessionWrapper::end('login_error');
+        if (!SessionWrapper::has('administrator')) {
+            echo '404 controller goes here';
+            die();
         }
-        SessionWrapper::end('temp_data');
+        $threads = $this->getDataFromModel();
+        $adminview = new AdminView();
+        $adminview->renderPage('admin.php', $threads);
+    }
+
+    public function getDataFromModel() {
+        $model = new ThreadModel($this->db);
+        return $model->getAllData();
     }
 }

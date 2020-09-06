@@ -10,11 +10,8 @@ class LoginController extends Controller {
     public function index() {
         $loginview = new LoginView();
         $loginview->renderPage('signin.php');
-        if ($this->checkErrors()) {
-            echo SessionWrapper::get('login_error');
-            SessionWrapper::end('login_error');
-        }
         SessionWrapper::end('temp_data');
+        SessionWrapper::end('login_error');
     }
 
     private function passDataToModel($postData) {

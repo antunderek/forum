@@ -6,7 +6,6 @@ use exceptions\MethodNotAllowedException;
 use exceptions\RouteNotFoundException;
 
 class Router {
-    const CONTROLLERS_PATH = '/var/www/html/forum/src/controllers/';
     protected $path;
     protected $controller;
     protected $method;
@@ -24,13 +23,13 @@ class Router {
             throw new RouteNotFoundException('Route not found');
         }
 
-        $this->removeTrailingSlashUrl($urlParts);
+        $this->removeTrailingSlash($urlParts);
 
         $this->controller = (isset($urlParts[1]) && $urlParts[1] !== '') ? ucfirst(strtolower(trim($urlParts[1])) . 'Controller') : 'HomeController';
         $this->method = (isset($urlParts[2]) && $urlParts[2] !== '') ? strtolower(trim($urlParts[2])) : 'index';
     }
 
-    private function removeTrailingSlashUrl($urlParts) {
+    private function removeTrailingSlash($urlParts) {
         if (count($urlParts) < MAX_URL_SIZE && $urlParts[1] === '') {
             return;
         }
@@ -56,7 +55,7 @@ class Router {
     }
 
     public function getPath() {
-        $controllerpath = self::CONTROLLERS_PATH . $this->controller;
+        $controllerpath = CONTROLLERS_PATH . $this->controller;
         $controllerfullpath = $controllerpath . '.php';
         if (!file_exists($controllerfullpath)) {
             throw new RouteNotFoundException('Route not found ' . $controllerfullpath);

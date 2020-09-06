@@ -11,12 +11,11 @@ class HomeController extends Controller
     {
         $threads = $this->getDataFromModel();
         $homeview = new HomeView();
-        $homeview->setData($threads);
-        $homeview->renderPage('home.php');
+        $homeview->renderPage('home.php', $threads);
     }
 
     public function getDataFromModel() {
         $model = new ThreadModel($this->db);
-        return $model->getThreads();
+        return $model->getAllData();
     }
 }

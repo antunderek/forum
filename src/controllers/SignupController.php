@@ -10,11 +10,8 @@ class SignupController extends Controller {
     public function index() {
         $homeview = new SignupView();
         $homeview->renderPage('signup.php');
-        if ($this->checkErrors()) {
-            echo SessionWrapper::get('register_error');
-            SessionWrapper::end('register_error');
-        }
         SessionWrapper::end('temp_data');
+        SessionWrapper::end('register_error');
     }
 
     private function passDataToModel($postData) {

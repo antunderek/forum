@@ -11,6 +11,7 @@ abstract class Controller
     protected $db;
 
     //interface za view i ostale, kako bi pristupili svim view class
+    // napraviti abstract index funkciju?
     public function __construct(PDO $db)
     {
         $this->db = $db;

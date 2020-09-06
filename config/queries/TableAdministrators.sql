@@ -1,5 +1,4 @@
 CREATE TABLE administrators (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  type varchar(5) NOT NULL DEFAULT 'BASIC',
-  PRIMARY KEY (id)
+  user_id int(11),
+  CONSTRAINT fk_id FOREIGN KEY (user_id) REFERENCES users(id)
 );

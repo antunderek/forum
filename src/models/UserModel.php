@@ -4,6 +4,7 @@ namespace models;
 
 use classes\User;
 use classes\SessionWrapper;
+use MongoDB\Driver\Session;
 use PDO;
 
 class UserModel extends Model {
@@ -32,10 +33,24 @@ class UserModel extends Model {
         }
     }
 
-    private function createUser($postdata, $newuser = false) {
-        $username = isset($postdata['username']) ? trim($postdata['username']) : null;
-        $password = $newuser ? password_hash(trim($postdata['password']), PASSWORD_ARGON2ID) : trim($postdata['password']);
-        return new User(trim($postdata['email']), $password, $username);
+    private function createUser($data, $newuser = false) {
+        $username = isset($data['username']) ? trim($data['username']) : null;
+        $id = isset($data['id']) ? $data['id'] : null;
+        $password = $newuser ? password_hash(trim($data['password']), PASSWORD_ARGON2ID) : trim($data['password']);
+        return new User(trim($data['email']), $password, $username, $id);
+    }
+
+    private function checkIfAdmin($user_id) {
+        $statement = $this->db->prepare("SELECT administrators.user_id FROM administrators INNER JOIN users ON administrators.user_id = users.id WHERE administrators.user_id = :user_id");
+        $statement->execute([':user_id' => $user_id]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    private function checkIfUsernameTaken() {
+    }
+
+    private function checkIfEmailTaken() {
     }
 
     public function addUser($postdata) {
@@ -44,6 +59,8 @@ class UserModel extends Model {
             SessionWrapper::set('register_error', 'Please input data in all fields.');
             return;
         }
+        $this->checkIfUsernameTaken();
+        $this->checkIfEmailTaken();
         $userdata = $this->createUser($postdata, true);
         $addUserStatement = $this->db->prepare(
             "INSERT INTO users (email, username) VALUES (:email, :username)"
@@ -70,7 +87,7 @@ class UserModel extends Model {
 
     private function findUserByEmail(string $email) {
         $statement = $this->db->prepare(
-            "SELECT users.email, passwords.password, users.username FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.email=:email;"
+            "SELECT users.email, passwords.password, users.username, users.id FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.email=:email;"
         );
         $statement->execute(
             [
@@ -80,6 +97,9 @@ class UserModel extends Model {
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $statement->fetch();
         $user = $this->createUser($result);
+        if ($this->checkIfAdmin($user->getId())) {
+            $user->setAdministrator(true);
+        }
         return $user;
     }
 
@@ -97,7 +117,17 @@ class UserModel extends Model {
         }
         if (password_verify($userdata->getPassword(), $dbuser->getPassword())) {
             SessionWrapper::set('name', $dbuser->getUsername());
+            SessionWrapper::set('id', $dbuser->getId());
+            if ($dbuser->getAdministrator()) {
+                SessionWrapper::set('administrator', true);
+            }
         }
+    }
+
+    public function addAdministrator() {
+    }
+
+    public function removeAdministrator() {
     }
 
     public function removeUser() {

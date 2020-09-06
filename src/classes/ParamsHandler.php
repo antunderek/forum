@@ -4,7 +4,7 @@ namespace classes;
 
 class ParamsHandler {
 
-    protected function typeMethod() {
+    private function typeMethod() {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             return $_GET;
         }
@@ -13,6 +13,7 @@ class ParamsHandler {
         }
         return null;
     }
+
     public function retreiveData() {
         return $this->typeMethod();
     }
