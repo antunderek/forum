@@ -15,26 +15,15 @@ class EditController extends Controller {
             die();
         }
         $name = $_GET['thread'];
-        if (isset($_GET['subthread'])) {
-            $threads = $this->getDataFromModel($_GET['subthread'], SUBTHREAD, $name);
-        }
-        else {
-            $threads = $this->getDataFromModel($name);
-            $threads['subthreads'] = $this->getAllThreadSubthreads($name);
-        }
+        $threads = $this->getDataFromModel($name);
         $editview = new EditView();
         $editview->renderPage('edit_thread.php', $threads);
-        unset($_GET['thread'], $_GET['subthread']);
+        unset($_GET['thread']);
     }
 
-    private function getDataFromModel($name, $type = THREAD, $thread_name = null) {
+    private function getDataFromModel($name) {
         $model = new ThreadModel($this->db);
-        return $model->getData($name, $type, $thread_name);
-    }
-
-    private function getAllThreadSubthreads($thread_name) {
-        $model = new ThreadModel($this->db);
-        return $model->getThreadsSubthreads($thread_name);
+        return $model->getThread($name);
     }
 
     private function passUpdateData($params) {

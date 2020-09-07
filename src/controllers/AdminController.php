@@ -19,6 +19,6 @@ class AdminController extends Controller {
 
     public function getDataFromModel() {
         $model = new ThreadModel($this->db);
-        return $model->getAllThreadsOrSubthreads(THREAD);
+        return $model->getAllThreads();
     }
 }

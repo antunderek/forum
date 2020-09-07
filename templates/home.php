@@ -12,25 +12,19 @@
     <a href="/signup">Signup</a>
 <?php endif; ?>
 
-   <?php foreach ($data['threads'] as $thread):?>
-<table border="1">
-    <tr>
-        <th>Thread</th>
-        <th>Description</th>
-        <th>Subthreads</th>
-        <th>Topics</th>
-        <th>Posts</th>
-    </tr>
-
-    <tr>
-        <td><b><?= $thread->getName() ?></b></td>
-        <td><?= $thread->getDescription() ?></td>
-    </tr>
-    <?php foreach($data['subthreads'][$thread->getName()] as $subthread): ?>
+   <?php foreach ($data as $thread):?>
+    <table border="1">
         <tr>
-            <td><?= $subthread->getName() ?></td>
-            <td><?= $subthread->getDescription() ?></td>
+            <th>Thread</th>
+            <th>Description</th>
+            <th>Subthreads</th>
+            <th>Topics</th>
+            <th>Posts</th>
         </tr>
-    <?php endforeach; ?>
+
+        <tr>
+            <td><b><?= $thread->getName() ?></b></td>
+            <td><?= $thread->getDescription() ?></td>
+        </tr>
     </table>
 <?php endforeach; ?>
