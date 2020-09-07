@@ -7,6 +7,7 @@ use models\ThreadModel;
 use classes\SessionWrapper;
 
 class EditController extends Controller {
+    //construct provjeri da li je administrator
     public function index()
     {
         if (!isset($_GET['thread']) || !SessionWrapper::has('administrator')) {
@@ -43,7 +44,7 @@ class EditController extends Controller {
 
     private function passCreateData($params) {
         $model = new ThreadModel($this->db);
-        $model->editThread($params);
+        $model->addNewThread($params);
     }
 
     private function passDeleteData($params) {

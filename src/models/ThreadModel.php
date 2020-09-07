@@ -6,6 +6,7 @@ use PDO;
 use classes\ForumThread;
 
 class ThreadModel extends Model {
+    //Ukloni subthreadove za sada
     private function dataValid($postdata): bool {
         if (!isset($postdata) || empty($postdata)) {
             return false;
@@ -75,10 +76,10 @@ class ThreadModel extends Model {
         $statement = $this->db->prepare("SELECT id FROM threads WHERE name=:thread_name");
         $statement->execute([':thread_name' => $thread_name]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
-        if (!isset($result)) {
-            return false;
+        if ($result) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     public function addNewThread($params) {
