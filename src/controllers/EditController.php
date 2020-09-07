@@ -23,8 +23,7 @@ class EditController extends Controller {
         }
         $editview = new EditView();
         $editview->renderPage('edit_thread.php', $threads);
-        unset($_GET['thread']);
-        unset($_GET['subthread']);
+        unset($_GET['thread'], $_GET['subthread']);
     }
 
     private function getDataFromModel($name, $type = THREAD, $thread_name = null) {
@@ -34,6 +33,36 @@ class EditController extends Controller {
 
     private function getAllThreadSubthreads($thread_name) {
         $model = new ThreadModel($this->db);
-        return $model->getAllData(SUBTHREAD, $thread_name);
+        return $model->getThreadsSubthreads($thread_name);
+    }
+
+    private function passUpdateData($params) {
+        $model = new ThreadModel($this->db);
+        $model->editThread($params);
+    }
+
+    private function passCreateData($params) {
+        $model = new ThreadModel($this->db);
+        $model->editThread($params);
+    }
+
+    private function passDeleteData($params) {
+        $model = new ThreadModel($this->db);
+        $model->removeThread($_GET['thread']);
+    }
+
+    public function update() {
+        $this->passUpdateData($this->paramshandler->retreiveData());
+    }
+
+    public function create() {
+        $this->passCreateData($this->paramshandler->retreiveData());
+    }
+
+    public function delete() {
+        if (isset($_GET['thread'])) {
+            $this->passDeleteData($this->paramshandler->retreiveData());
+            header('Location: /admin');
+        }
     }
 }

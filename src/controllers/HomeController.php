@@ -16,6 +16,13 @@ class HomeController extends Controller
 
     public function getDataFromModel() {
         $model = new ThreadModel($this->db);
-        return $model->getAllData();
+        $threads = $model->getAllThreadsOrSubthreads(THREAD);
+        $subthreads = null;
+        foreach ($threads as $thread) {
+            $thread_name = $thread->getName();
+            $subthreads[$thread_name] = $model->getThreadsSubthreads($thread_name);
+        }
+        $threads_subthreads = ['threads' => $threads, 'subthreads' => $subthreads];
+        return $threads_subthreads;
     }
 }

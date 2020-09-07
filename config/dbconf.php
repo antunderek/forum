@@ -5,6 +5,6 @@ return [
         'db_host' => '127.0.0.1',
         'db_port' => '3306',
         'db_name' => 'forum',
-        'db_user' => 'root', //inchoo
+        'db_user' => 'inchoo',
         'db_pass' => 'password',
 ];

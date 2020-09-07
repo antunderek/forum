@@ -19,10 +19,10 @@
             <td></td>
             <td></td>
             <td><a href="/edit/index?thread=<?= $thread->getName() ?>">Edit</a></td>
-            <td><a href="/edit/delete?thread=<?= $thread->getName() ?>"onclick="return confirm('Are you sure you want to delete this thread')">Delete</a></td>
+            <td><a href="/edit/delete?thread=<?= $thread->getName() ?>" onclick="return confirm('Are you sure you want to delete this thread')">Delete</a></td>
         </tr>
     <?php endforeach; ?>
 </table>
-<button>Add thread</button>
+<a href="/edit/index?thread=new&action=create"><button>Add thread</button></a>
 
 <h2>Search for users</h2>

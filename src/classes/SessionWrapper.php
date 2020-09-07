@@ -3,8 +3,8 @@
 namespace classes;
 
 class SessionWrapper {
-    public static function has($name, $key=null) {
-        return isset($_SESSION[$name]) || isset($_SESSION[$name][$key]);
+    public static function has($name, $key=null): bool {
+        return !isset($key) ? isset($_SESSION[$name]) : isset($_SESSION[$name][$key]);
     }
     public static function get($name, $key=null) {
         if (isset($key)) {

@@ -12,6 +12,7 @@
     <a href="/signup">Signup</a>
 <?php endif; ?>
 
+   <?php foreach ($data['threads'] as $thread):?>
 <table border="1">
     <tr>
         <th>Thread</th>
@@ -20,10 +21,16 @@
         <th>Topics</th>
         <th>Posts</th>
     </tr>
-    <?php foreach ($data as $thread):?>
+
+    <tr>
+        <td><b><?= $thread->getName() ?></b></td>
+        <td><?= $thread->getDescription() ?></td>
+    </tr>
+    <?php foreach($data['subthreads'][$thread->getName()] as $subthread): ?>
         <tr>
-            <td><?= $thread->getName() ?></td>
-            <td><?= $thread->getDescription() ?></td>
+            <td><?= $subthread->getName() ?></td>
+            <td><?= $subthread->getDescription() ?></td>
         </tr>
     <?php endforeach; ?>
-</table>
+    </table>
+<?php endforeach; ?>

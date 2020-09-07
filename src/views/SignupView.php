@@ -5,6 +5,10 @@ use classes\SessionWrapper;
 
 class SignupView extends View
 {
+    public function userLoggedIn() {
+        return SessionWrapper::has('name');
+    }
+
     public function checkRegisterError()
     {
         if (SessionWrapper::has('register_error')) {

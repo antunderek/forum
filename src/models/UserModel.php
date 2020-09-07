@@ -4,7 +4,6 @@ namespace models;
 
 use classes\User;
 use classes\SessionWrapper;
-use MongoDB\Driver\Session;
 use PDO;
 
 class UserModel extends Model {
@@ -47,20 +46,42 @@ class UserModel extends Model {
         return $result;
     }
 
-    private function checkIfUsernameTaken() {
+    private function checkIfUsernameTaken(string $username) {
+        $statement = $this->db->prepare("SELECT username FROM users WHERE username=:username");
+        $statement->execute([':username' => $username]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result;
     }
 
-    private function checkIfEmailTaken() {
+    private function checkIfEmailTaken(string $email)
+    {
+        $statement = $this->db->prepare("SELECT email FROM users WHERE email=:email");
+        $statement->execute([':email' => $email]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result;
     }
 
+    // mysql proceduru napraviti
     public function addUser($postdata) {
         if (!$this->dataValid($postdata)) {
             $this->tempStoreUserInput($postdata);
             SessionWrapper::set('register_error', 'Please input data in all fields.');
             return;
         }
-        $this->checkIfUsernameTaken();
-        $this->checkIfEmailTaken();
+        if ($this->checkIfUsernameTaken($postdata['username'])) {
+            SessionWrapper::set('register_error', 'Name already taken');
+        }
+        if ($this->checkIfEmailTaken($postdata['email'])) {
+            if (SessionWrapper::has('register_error')) {
+                SessionWrapper::set('register_error', 'Name and email already taken');
+            }
+            else {
+                SessionWrapper::set('register_error', 'Email already taken');
+            }
+        }
+        if (SessionWrapper::has('register_error')) {
+            return;
+        }
         $userdata = $this->createUser($postdata, true);
         $addUserStatement = $this->db->prepare(
             "INSERT INTO users (email, username) VALUES (:email, :username)"
