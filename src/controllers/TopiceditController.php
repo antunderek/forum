@@ -16,17 +16,17 @@ class TopiceditController extends Controller {
             // die();
             $topics = [];
         } else {
-            $name = $_GET['topic'];
-            $topics = $this->getDataFromModel($name);
+            $id = $_GET['topic'];
+            $topics[] = $this->getDataFromModel($id);
         }
         $editview = new TopiceditView();
         $editview->renderPage('edit_topic.php', $topics);
         unset($_GET['thread']);
     }
 
-    private function getDataFromModel($name) {
+    private function getDataFromModel($id) {
         $model = new TopicModel($this->db);
-        return $model->getTopic($name);
+        return $model->getTopic($id);
     }
 
     private function passUpdateData($params) {
@@ -41,23 +41,29 @@ class TopiceditController extends Controller {
 
     private function passDeleteData($params) {
         $model = new TopicModel($this->db);
-        $model->removeTopic($_GET['thread']);
+        $model->removeTopic($_GET['topic']);
     }
 
     public function update() {
+        $currentThread = $_GET['current_thread'];
         $this->passUpdateData($this->paramshandler->retreiveData());
-        header('Location: /');
+        header("Location: /topic/index?thread={$currentThread}");
     }
 
     public function create() {
+        $currentThread = $_GET['current_thread'];
         $this->passCreateData($this->paramshandler->retreiveData());
-        header('Location: /');
+        header("Location: /topic/index?thread={$currentThread}");
     }
 
     public function delete() {
-        if (isset($_GET['thread'])) {
+        if (isset($_GET['topic'])) {
+            $currentThread = $_GET['thread'];
             $this->passDeleteData($this->paramshandler->retreiveData());
-            header('Location: /');
+            header("Location: /topic/index?thread={$currentThread}");
+        }
+        else {
+            header("Location: /");
         }
     }
 }

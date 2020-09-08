@@ -6,6 +6,7 @@
     <?php if (\classes\SessionWrapper::has('administrator')): ?>
         <a href="/admin">Administrator panel</a>
     <?php endif; ?>
+    <a href="/profile">My profile</a>
     <a href="/logout">Logout</a>
 <?php else: ?>
     <a href="/login">Login</a>

@@ -14,6 +14,15 @@ class TopiceditView extends View
         return isset($data[0]) ? $data[0]->getDescription() : "";
     }
 
+    public function getTopicId($data)
+    {
+        return isset($data[0]) ? $data[0]->getId() : "";
+    }
+
+    public function getThreadName() {
+        return $_GET['thread'];
+    }
+
     public function isNewTopic()
     {
         if ($_GET['topic'] === 'newtopic') {

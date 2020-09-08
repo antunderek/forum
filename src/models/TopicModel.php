@@ -13,8 +13,11 @@ class TopicModel extends Model {
         if (!isset($postdata) || empty($postdata)) {
             return false;
         }
-        foreach ($postdata as $data) {
+        foreach ($postdata as $key => $data) {
             if (!isset($data) || empty(trim($data))) {
+                if ($key === 'description') {
+                    continue;
+                }
                 return false;
             }
         }
@@ -24,7 +27,7 @@ class TopicModel extends Model {
     public function createArrayOfTopics($topics) {
         $topics_array = array();
         foreach($topics as $key => $topic) {
-            $topics_array[] = new Topic($topic['name'], $topic['description'], $topic['user_id'], $topic['thread_id'], $topic['created']);
+            $topics_array[] = new Topic($topic['name'], $topic['description'], $topic['user_id'], $topic['thread_id'], $topic['id'], $topic['created']);
         }
         return $topics_array;
     }
@@ -32,31 +35,37 @@ class TopicModel extends Model {
     public function getAllTopics() {
         $statement = $this->db->prepare("SELECT * FROM topics");
         $statement->execute();
-        $topics = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $this->createArrayOfTopics($topics);
+        $topics_array = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $this->createArrayOfTopics($topics_array);
     }
 
     public function getThreadTopics($thread_name) {
-        $statement = $this->db->prepare("SELECT * FROM topics INNER JOIN threads ON topics.thread_id = threads.id WHERE threads.name=:thread_name");
+        $statement = $this->db->prepare("
+            SELECT topics.name, topics.description, users.username AS user_id, topics.thread_id, topics.id, topics.created 
+            FROM topics
+            INNER JOIN threads ON topics.thread_id = threads.id 
+            INNER JOIN users ON topics.user_id = users.id
+            WHERE threads.name=:thread_name
+        ");
         $statement->execute([':thread_name' => $thread_name]);
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        $topics_array = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $this->createArrayOfTopics($topics_array);
     }
 
     public function getTopic($topic_id) {
         $statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
         $statement->execute([':topic_id' => $topic_id]);
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        $topicArray = $statement->fetch(PDO::FETCH_ASSOC);
+        return new Topic($topicArray['name'], $topicArray['description'], $topicArray['user_id'], $topicArray['thread_id'], $topicArray['id'], $topicArray['created']);
     }
 
 
-    private function topicExsists($thread_name) {
-        $statement = $this->db->prepare("SELECT id FROM topics WHERE name=:thread_name");
-        $statement->execute([':thread_name' => $thread_name]);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            return true;
-        }
-        return false;
+    private function topicExsists($topic_id) {
+        $statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
+        $topic_id = (int)$topic_id;
+        $statement->execute([':topic_id' => $topic_id]);
+        $topicArray = $statement->fetch(PDO::FETCH_ASSOC);
+        return new Topic($topicArray['name'], $topicArray['description'], $topicArray['user_id'], $topicArray['thread_id'], $topicArray['id'], $topicArray['created']);
     }
 
     public function addNewTopic($params) {
@@ -64,9 +73,9 @@ class TopicModel extends Model {
             echo 'Name is empty';
             die();
         }
-        $thread = new Topic($params['name'], $params['description'], SessionWrapper::get('id'), time());
-        $statement = $this->db->prepare('INSERT INTO topics (name, description, user_id) VALUES (:name, :description, :user_id)');
-        $statement->execute([':name' => $thread->getName(), ':description' => $thread->getDescription(), ':user_id' => SessionWrapper::get('id')]);
+        $thread = new Topic($params['name'], $params['description'], SessionWrapper::get('id'), $params['current_thread']);
+        $statement = $this->db->prepare('INSERT INTO topics (name, description, user_id, thread_id) VALUES (:name, :description, :user_id, (SELECT id FROM threads WHERE name=:thread_id ))');
+        $statement->execute([':name' => $thread->getName(), ':description' => $thread->getDescription(), ':user_id' => SessionWrapper::get('id'), ':thread_id' => $thread->getParent()]);
     }
 
     public function editTopic($params) {
@@ -74,16 +83,18 @@ class TopicModel extends Model {
             echo 'Name is empty';
             die();
         }
-        $thread = new Topic($params['name'], $params['description'], );
-        if (!$this->threadExsists($params['original_thread'])) {
+        $topic = $this->topicExsists($params['id']);
+        if (!$topic) {
             echo "404";
             die();
         }
-        $statement = $this->db->prepare('UPDATE threads SET name=:name, description=:description WHERE name=:original_thread');
+        $topic->setName($params['name']);
+        $topic->setDescription($params['description']);
+        $statement = $this->db->prepare('UPDATE topics SET name=:name, description=:description WHERE id=:topic_id');
         $statement->execute([
-            ':name' => $thread->getName(),
-            ':description' => $thread->getDescription(),
-            ':original_thread' => $params['original_thread']
+            ':name' => $topic->getName(),
+            ':description' => $topic->getDescription(),
+            ':topic_id' => $params['id']
         ]);
     }
 

@@ -9,17 +9,23 @@
     <br>
     <textarea maxlength="255" name="description"><?= $this->getTopicDescription($data) ?></textarea>
     <br>
-    <lable for="Thread">Thread:</lable>
+    <lable for="thread">Thread:</lable>
     <br>
-    <p>Drop down of available threads only if creating new topic</p>
+    <!--<select name="thread">
+        <option value="">Add thread model to controller</option>
+    </select>
+    -->
     <br>
+    <input type="hidden" name="current_thread" value="<?= $_GET['thread'] ?>">
+    <input type="hidden" name="id" value="<?= $_GET['topic'] ?>">
 
     <?php if(!$this->isNewTopic()): ?>
         <input type="hidden" name="original_topic" value="<?= $this->getTopicName($data) ?>">
     <?php endif; ?>
+
     <input type="submit">
 </form>
 
 <?php if(!$this->isNewTopic()): ?>
-    <a href="delete?topic=<?= $this->getThreadName($data) ?>&action=delete"><button>Delete topic</button></a>
+    <a href="delete?thread=<?= $_GET['thread'] ?>&topic=<?= $this->getTopicId($data) ?>&action=delete"><button>Delete topic</button></a>
 <?php endif; ?>

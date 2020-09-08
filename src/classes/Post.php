@@ -1,26 +1,27 @@
 <?php
 
 class Post {
-    protected $topic;
+    protected $topicId;
+    protected $id;
     protected $user;
-    protected $date_posted;
-    protected $post;
+    protected $datePosted;
+    protected $content;
 
-    public function __construct($topic, $user, $date_posted, $post) {
-        $this->topic = $topic;
+    public function __construct($topicId, $user, $datePosted, $content) {
+        $this->topicId = $topicId;
         $this->user = $user;
-        $this->date_posted = $date_posted;
-        $this->post = $post;
+        $this->datePosted = $datePosted;
+        $this->content = $content;
     }
 
-    public function getTopic()
+    public function getTopicId()
     {
-        return $this->topic;
+        return $this->topicId;
     }
 
-    public function setTopic($topic): void
+    public function setTopic($topicId): void
     {
-        $this->topic = $topic;
+        $this->topicId = $topicId;
     }
 
     public function getUser()
@@ -35,21 +36,21 @@ class Post {
 
     public function getDatePosted()
     {
-        return $this->dateposted;
+        return $this->datePosted;
     }
 
-    public function setDatePosted($dateposted): void
+    public function setDatePosted($datePosted): void
     {
-        $this->dateposted = $dateposted;
+        $this->datePosted = $datePosted;
     }
 
-    public function getPost()
+    public function getContent()
     {
-        return $this->post;
+        return $this->content;
     }
 
-    public function setPost($post): void
+    public function setContent($content): void
     {
-        $this->post = $post;
+        $this->content = $content;
     }
 }
