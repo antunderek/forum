@@ -1,16 +1,19 @@
 <?php
 
+namespace classes;
+
 class Post {
     protected $topicId;
-    protected $id;
     protected $user;
     protected $datePosted;
+    protected $id;
     protected $content;
 
-    public function __construct($topicId, $user, $datePosted, $content) {
+    public function __construct($topicId, $user, $content, $id = null, $datePosted = null) {
         $this->topicId = $topicId;
         $this->user = $user;
         $this->datePosted = $datePosted;
+        $this->id = $id;
         $this->content = $content;
     }
 
@@ -29,7 +32,7 @@ class Post {
         return $this->user;
     }
 
-    public function setUser($user): void
+    public function setUserId($user): void
     {
         $this->user = $user;
     }

@@ -45,13 +45,13 @@ class TopiceditController extends Controller {
     }
 
     public function update() {
-        $currentThread = $_GET['current_thread'];
+        $currentThread = $_POST['current_thread'];
         $this->passUpdateData($this->paramshandler->retreiveData());
         header("Location: /topic/index?thread={$currentThread}");
     }
 
     public function create() {
-        $currentThread = $_GET['current_thread'];
+        $currentThread = $_POST['current_thread'];
         $this->passCreateData($this->paramshandler->retreiveData());
         header("Location: /topic/index?thread={$currentThread}");
     }

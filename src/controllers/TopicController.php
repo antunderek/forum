@@ -2,7 +2,9 @@
 
 namespace controllers;
 use views\TopicView;
+use views\PostsView;
 use models\TopicModel;
+use models\PostModel;
 
 class TopicController extends Controller {
     public function index()
@@ -12,13 +14,20 @@ class TopicController extends Controller {
         }
         $thread = $_GET['thread'];
         $topics = $this->getThreadTopics($thread);
-        $homeview = new TopicView();
-        $homeview->renderPage('topics.php', $topics);
+        $homeView = new TopicView();
+        $homeView->renderPage('topics.php', $topics);
     }
 
-    public function view() {
+    public function posts() {
         // Grab all posts concerning topic, order them by date created
         // $homeview->renderPage('view.php', $posts);
+        $topicId = $_GET['topic'];
+        $topic = $this->getSingleTopic($topicId);
+        $topicId = $topic->getId();
+        $posts = $this->getPosts($topicId);
+        $data = ['topic' => $topic, 'posts' => $posts];
+        $postsView = new PostsView();
+        $postsView->renderPage('posts.php', $data);
     }
 
     //public function
@@ -33,5 +42,13 @@ class TopicController extends Controller {
         return $model->getThreadTopics($thread);
     }
 
-    private function getSingleTopic() {}
+    private function getSingleTopic($topicId) {
+        $model = new TopicModel($this->db);
+        return $model->getTopic($topicId);
+    }
+
+    private function getPosts($topicId) {
+        $model = new PostModel($this->db);
+        return $model->getPosts($topicId);
+    }
 }

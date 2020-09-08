@@ -8,7 +8,7 @@ use PDO;
 
 class UserModel extends Model {
 
-    private function dataValid($postdata): bool {
+    private function dataValid($postdata) {
         if (!isset($postdata) || empty($postdata)) {
             return false;
         }

@@ -39,7 +39,7 @@ class TopicModel extends Model {
         return $this->createArrayOfTopics($topics_array);
     }
 
-    public function getThreadTopics($thread_name) {
+    public function getThreadTopics($threadName) {
         $statement = $this->db->prepare("
             SELECT topics.name, topics.description, users.username AS user_id, topics.thread_id, topics.id, topics.created 
             FROM topics
@@ -47,23 +47,30 @@ class TopicModel extends Model {
             INNER JOIN users ON topics.user_id = users.id
             WHERE threads.name=:thread_name
         ");
-        $statement->execute([':thread_name' => $thread_name]);
-        $topics_array = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $this->createArrayOfTopics($topics_array);
+        $statement->execute([':thread_name' => $threadName]);
+        $topicsArray = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $this->createArrayOfTopics($topicsArray);
     }
 
-    public function getTopic($topic_id) {
-        $statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
-        $statement->execute([':topic_id' => $topic_id]);
+    public function getTopic($topicId) {
+        //$statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
+        $statement = $this->db->prepare("
+            SELECT topics.name, topics.description, users.username AS user_id, topics.thread_id, topics.id, topics.created 
+            FROM topics
+            INNER JOIN threads ON topics.thread_id = threads.id 
+            INNER JOIN users ON topics.user_id = users.id
+            WHERE topics.id=:topicId
+        ");
+        $statement->execute([':topicId' => $topicId]);
         $topicArray = $statement->fetch(PDO::FETCH_ASSOC);
         return new Topic($topicArray['name'], $topicArray['description'], $topicArray['user_id'], $topicArray['thread_id'], $topicArray['id'], $topicArray['created']);
     }
 
 
-    private function topicExsists($topic_id) {
+    private function topicExsists($topicId) {
         $statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
-        $topic_id = (int)$topic_id;
-        $statement->execute([':topic_id' => $topic_id]);
+        $topicId = (int)$topicId;
+        $statement->execute([':topic_id' => $topicId]);
         $topicArray = $statement->fetch(PDO::FETCH_ASSOC);
         return new Topic($topicArray['name'], $topicArray['description'], $topicArray['user_id'], $topicArray['thread_id'], $topicArray['id'], $topicArray['created']);
     }
