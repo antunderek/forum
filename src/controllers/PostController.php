@@ -22,7 +22,16 @@ class PostController extends Controller {
     }
 
     // Post sadrzi varijable
-    public function editPost($postId, $data) {}
+    public function editPost($postId, $data) {
+        $params = $this->paramshandler->retreiveData();
+        if (!SessionWrapper::has('administrator') || SessionWrapper::get('id') !== $params['user_id']) {
+            echo "Not allowed to make changes";
+            die();
+        }
+        $model = new PostModel($this->db);
+        $model->updatePost($params);
+        header("Location: /topic/posts?topic={$params['topic_id']}");
+    }
 
     // Only removes content and ?name of the poster, leaves a message 'post deleted'
     public function removePost($postId) {}

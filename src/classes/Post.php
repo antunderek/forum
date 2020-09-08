@@ -7,6 +7,8 @@ class Post {
     protected $user;
     protected $datePosted;
     protected $id;
+
+
     protected $content;
 
     public function __construct($topicId, $user, $content, $id = null, $datePosted = null) {
@@ -32,7 +34,7 @@ class Post {
         return $this->user;
     }
 
-    public function setUserId($user): void
+    public function setUser($user): void
     {
         $this->user = $user;
     }
@@ -45,6 +47,16 @@ class Post {
     public function setDatePosted($datePosted): void
     {
         $this->datePosted = $datePosted;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     public function getContent()

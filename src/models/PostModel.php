@@ -37,6 +37,13 @@ class PostModel extends Model {
         return $this->objectPostArray($result);
     }
 
+    public function getPost($postId) {
+        $statement = $this->db->prepare("SELECT * FROM posts WHERE id=:postId");
+        $statement->execute([':postId' => $postId]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return new Post($result['topic_id'], $result['user_id'], $result['content'], $result['id'], $result['dateposted']);
+    }
+
     public function setPost($params) {
         if (!$this->dataValid($params)) {
             echo "here goes 404";
@@ -48,6 +55,25 @@ class PostModel extends Model {
             ':topicId' => $post->getTopicId(),
             ':userId' => $post->getUser(),
             ':content' => $post->getContent(),
+        ]);
+        return $post;
+    }
+
+    public function updatePost($params) {
+        if (!$this->dataValid($params)) {
+            echo "here goes 404";
+            die();
+        }
+        $post = $this->getPost($params['id']);
+        if (!$post) {
+            echo "404";
+            die();
+        }
+        $post->setContent($params['content']);
+        $statement = $this->db->prepare("UPDATE posts SET content=:content WHERE id=:postId");
+        $statement->execute([
+            ':content' => $post->getContent(),
+            ':postId' => $post->getId(),
         ]);
         return $post;
     }
