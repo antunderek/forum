@@ -6,6 +6,7 @@ use PDO;
 use classes\ForumThread;
 
 class ThreadModel extends Model {
+
     private function dataValid($postdata): bool {
         if (!isset($postdata) || empty($postdata)) {
             return false;

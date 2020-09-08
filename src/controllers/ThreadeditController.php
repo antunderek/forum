@@ -6,8 +6,8 @@ use views\EditView;
 use models\ThreadModel;
 use classes\SessionWrapper;
 
-class EditController extends Controller {
-    //construct provjeri da li je administrator
+class ThreadeditController extends Controller {
+    //construct check if administrator add model to construct
     public function index()
     {
         if (!isset($_GET['thread']) || !SessionWrapper::has('administrator')) {
@@ -43,10 +43,12 @@ class EditController extends Controller {
 
     public function update() {
         $this->passUpdateData($this->paramshandler->retreiveData());
+        header('Location: /admin');
     }
 
     public function create() {
         $this->passCreateData($this->paramshandler->retreiveData());
+        header('Location: /admin');
     }
 
     public function delete() {

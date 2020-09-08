@@ -6,8 +6,8 @@ class Topic extends ForumThread {
     protected $topicCreator;
     protected $dateCreated;
 
-    public function __construct($name, $description, $topicCreator, $dateCreated) {
-        parent::__construct($name, $description);
+    public function __construct($name, $description, $topicCreator, $parent_thread = null, $dateCreated) {
+        parent::__construct($name, $description, $parent_thread);
         $this->topicCreator = $topicCreator;
         $this->dateCreated = $dateCreated;
     }

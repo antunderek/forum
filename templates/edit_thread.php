@@ -12,3 +12,7 @@
     <input type="hidden" name="original_thread" value="<?= $this->getThreadName($data) ?>">
     <input type="submit">
 </form>
+
+<?php if(!$this->isNewThread()): ?>
+    <a href="delete?thread=<?= $this->getThreadName($data) ?>&action=delete"><button>Delete thread</button></a>
+<?php endif; ?>

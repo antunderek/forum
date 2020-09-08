@@ -21,10 +21,10 @@
             <th>Topics</th>
             <th>Posts</th>
         </tr>
-
-        <tr>
-            <td><b><?= $thread->getName() ?></b></td>
-            <td><?= $thread->getDescription() ?></td>
-        </tr>
+            <tr>
+                <td><a href="topic/index?thread=<?= $thread->getName() ?>"><b><?= $thread->getName() ?></b></a></td>
+                <td><?= $thread->getDescription() ?></td>
+            </tr>
+        </a>
     </table>
-<?php endforeach; ?>
+   <?php endforeach; ?>

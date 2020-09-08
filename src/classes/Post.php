@@ -3,13 +3,13 @@
 class Post {
     protected $topic;
     protected $user;
-    protected $dateposted;
+    protected $date_posted;
     protected $post;
 
-    public function __construct($topic, $user, $dateposted, $post) {
+    public function __construct($topic, $user, $date_posted, $post) {
         $this->topic = $topic;
         $this->user = $user;
-        $this->dateposted = $dateposted;
+        $this->date_posted = $date_posted;
         $this->post = $post;
     }
 
@@ -33,12 +33,12 @@ class Post {
         $this->user = $user;
     }
 
-    public function getDateposted()
+    public function getDatePosted()
     {
         return $this->dateposted;
     }
 
-    public function setDateposted($dateposted): void
+    public function setDatePosted($dateposted): void
     {
         $this->dateposted = $dateposted;
     }
