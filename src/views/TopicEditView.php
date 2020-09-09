@@ -2,7 +2,7 @@
 
 namespace views;
 
-class TopiceditView extends View
+class TopicEditView extends View
 {
     public function getTopicName($data)
     {

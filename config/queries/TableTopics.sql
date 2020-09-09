@@ -6,6 +6,6 @@ CREATE TABLE topics (
                         user_id INT,
                         created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         PRIMARY KEY (id),
-                        CONSTRAINT fk_thread FOREIGN KEY (thread_id) REFERENCES threads(id),
-                        CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+                        CONSTRAINT fk_thread FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE,
+                        CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

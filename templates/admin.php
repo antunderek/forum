@@ -18,11 +18,11 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><a href="/threadedit/index?thread=<?= $thread->getName() ?>">Edit</a></td>
-            <td><a href="/threadedit/delete?thread=<?= $thread->getName() ?>" onclick="return confirm('Are you sure you want to delete this thread')">Delete</a></td>
+            <td><a href="/thread/index?thread=<?= $thread->getName() ?>">Edit</a></td>
+            <td><a href="/thread/delete?thread=<?= $thread->getName() ?>" onclick="return confirm('Are you sure you want to delete this thread')">Delete</a></td>
         </tr>
     <?php endforeach; ?>
 </table>
-<a href="/threadedit/index?thread=newthread&action=create"><button>Add thread</button></a>
+<a href="/thread/index?thread=newthread&action=create"><button>Add thread</button></a>
 
 <h2>Search for users</h2>

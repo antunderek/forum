@@ -4,6 +4,7 @@ namespace models;
 
 use classes\User;
 use classes\SessionWrapper;
+use MongoDB\Driver\Session;
 use PDO;
 
 class UserModel extends Model {
@@ -106,7 +107,7 @@ class UserModel extends Model {
 
     }
 
-    private function findUserById(int $id) {
+    public function getUserById(int $id) {
         $statement = $this->db->prepare(
             "SELECT users.email, passwords.password, users.username, users.id FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.id=:id;"
         );
@@ -124,7 +125,7 @@ class UserModel extends Model {
         return $user;
     }
 
-    private function findUserByEmail(string $email) {
+    private function getUserByEmail(string $email) {
         $statement = $this->db->prepare(
             "SELECT users.email, passwords.password, users.username, users.id FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.email=:email;"
         );
@@ -149,11 +150,13 @@ class UserModel extends Model {
             return;
         }
         $userdata = $this->createUser($params);
-        $dbuser = $this->findUserByEmail($userdata->getEmail());
+        $dbuser = $this->getUserByEmail($userdata->getEmail());
         if (!isset($dbuser) || !password_verify($userdata->getPassword(), $dbuser->getPassword())) {
             $this->tempStoreUserInput($params);
             SessionWrapper::set('login_error', 'Wrong email or password');
+            return;
         }
+        // remove if statement
         if (password_verify($userdata->getPassword(), $dbuser->getPassword())) {
             SessionWrapper::set('name', $dbuser->getUsername());
             SessionWrapper::set('id', $dbuser->getId());
@@ -163,26 +166,59 @@ class UserModel extends Model {
         }
     }
 
-    public function addAdministrator() {
+    public function addAdministrator($id) {
     }
 
-    public function removeAdministrator() {
+    public function removeAdministrator($id) {
     }
 
-    public function removeUser() {
+    public function updateUsernameEmail($id, $params) {
+        if (!$this->dataValid($params)) {
+            $this->tempStoreUserInput($params);
+            SessionWrapper::set('update_error', 'Please input data in all fields.');
+            return;
+        }
+        $user = $this->getUserById($id);
+        if (!isset($user)) {
+            echo "User doesn't exist";
+            die();
+        }
+        $user->setUsername($params['username']);
+        $user->setEmail($params['email']);
+        $statement = $this->db->prepare("UPDATE users SET username=:username, email=:email WHERE id=:id");
+        $statement->execute([':username' => $user->getUsername(), ':email' => $user->getEmail(), ':id' => $id]);
+        SessionWrapper::set('name', $user->getUsername());
     }
 
-    public function changeUsername($id, $username) {
-        $user = $this->findUserById($id);
+    public function changePassword($id, $params) {
+        if (!$this->dataValid($params)) {
+            $this->tempStoreUserInput($params);
+            SessionWrapper::set('password_error', 'Please input data in all fields.');
+            return;
+        }
+        $dbUser = $this->getUserById($id);
+        if (!isset($dbUser) || !password_verify(trim($params['current-password']), $dbUser->getPassword())) {
+            $this->tempStoreUserInput($params);
+            SessionWrapper::set('password_error', 'Password incorrect');
+            return;
+        }
+        if (trim($params['new-password']) !== trim($params['check-password'])) {
+            SessionWrapper::set('password_error', "Passwords don't match");
+            return;
+        }
+        $password = password_hash(trim($params['new-password']), PASSWORD_ARGON2ID);
+        $statement = $this->db->prepare("UPDATE passwords SET password=:password WHERE user_id=:id");
+        $statement->execute([
+            ':password' => $password,
+            ':id' => $id,
+        ]);
     }
 
-    public function changeEmail($id, $email) {
-        $user = $this->findUserById($id);
+    public function removeUser($id) {
+       $statement = $this->db->prepare('DELETE FROM users WHERE id=:id');
+       $statement->execute([':id' => $id]);
     }
 
-    public function changePassword($id, $password) {
-        $user = $this->findUserById($id);
+    public function changeProfilePicture($id) {
     }
-
-    public function changeProfilePicture($id) {}
 }
