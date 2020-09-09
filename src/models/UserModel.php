@@ -40,6 +40,14 @@ class UserModel extends Model {
         return new User(trim($data['email']), $password, $username, $id);
     }
 
+    private function createArrayOfUsers($users) {
+        $usersArray = array();
+        foreach($users as $key => $user) {
+            $usersArray[] = new User($user['email'], null, $user['username'], $user['id']);
+        }
+        return $usersArray;
+    }
+
     private function checkIfAdmin($user_id) {
         $statement = $this->db->prepare("SELECT administrators.user_id FROM administrators INNER JOIN users ON administrators.user_id = users.id WHERE administrators.user_id = :user_id");
         $statement->execute([':user_id' => $user_id]);
@@ -105,6 +113,13 @@ class UserModel extends Model {
             )
         );
 
+    }
+
+    public function getUsers() {
+        $statement = $this->db->prepare("SELECT * FROM users");
+        $statement->execute();
+        $users = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $this->createArrayOfUsers($users);
     }
 
     public function getUserById(int $id) {

@@ -96,7 +96,7 @@ class PostModel extends Model {
             echo 'You are not allowed to make changes';
             die();
         }
-        $post->setContent('Post had been deleted.');
+        $post->setContent('Post has been deleted.');
         $statement = $this->db->prepare("UPDATE posts SET content=:content WHERE id=:postId");
         $statement->execute([
             ':content' => $post->getContent(),

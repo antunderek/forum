@@ -33,13 +33,17 @@
 </table>
 <?php endforeach; ?>
 
-<div>
-    <p>Write post:</p>
-    <form action="/post/create" method="POST">
-        <textarea maxlength="255" name="content"></textarea>
-        <input type="hidden" name="topic_id" value="<?= $data['topic']->getId() ?>">
-        <input type="hidden" name="user_id" value="<?= \classes\SessionWrapper::get('id') ?>">
-        <br>
-        <input type="submit">
-    </form>
-</div>
+<?php if(\classes\SessionWrapper::has('id')): ?>
+    <div>
+        <p>Write post:</p>
+        <form action="/post/create" method="POST">
+            <textarea maxlength="255" name="content"></textarea>
+            <input type="hidden" name="topic_id" value="<?= $data['topic']->getId() ?>">
+            <input type="hidden" name="user_id" value="<?= \classes\SessionWrapper::get('id') ?>">
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+<?php else: ?>
+    <p>You have to be logged in to post.</p>
+<?php endif; ?>
