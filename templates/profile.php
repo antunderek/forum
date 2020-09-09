@@ -1,7 +1,17 @@
 <h1>Profile page</h1>
 
 <h2>Update profile</h2>
+
 <h3>Change profile picture</h3>
+<form action="/profile/image" method="POST" enctype="multipart/form-data">
+    <p>Upload profile image:</p>
+    <br>
+    <input type="file" name="image" id="image">
+    <br>
+    <input type="submit" value="Upload Image" name="submit">
+</form>
+
+<h3>Change username and email</h3>
 <form action="/profile/update" method="POST">
     <label for="username">Username:</label>
     <br>

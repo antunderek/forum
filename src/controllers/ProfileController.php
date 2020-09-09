@@ -1,11 +1,12 @@
 <?php
 
 namespace controllers;
-
 use PDO;
+
 use views\ProfileView;
 use models\UserModel;
 use classes\SessionWrapper;
+use classes\ImageUpload;
 
 class ProfileController extends Controller
 {
@@ -54,5 +55,10 @@ class ProfileController extends Controller
             echo "You have to log in to access this page";
             die();
         }
+    }
+
+    public function image() {
+        $image = new ImageUpload();
+        $image->upload();
     }
 }
