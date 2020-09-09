@@ -1,26 +1,32 @@
 <?php
 
+namespace classes;
+
 class Post {
-    protected $topic;
+    protected $topicId;
     protected $user;
-    protected $dateposted;
-    protected $post;
+    protected $datePosted;
+    protected $id;
 
-    public function __construct($topic, $user, $dateposted, $post) {
-        $this->topic = $topic;
+
+    protected $content;
+
+    public function __construct($topicId, $user, $content, $id = null, $datePosted = null) {
+        $this->topicId = $topicId;
         $this->user = $user;
-        $this->dateposted = $dateposted;
-        $this->post = $post;
+        $this->datePosted = $datePosted;
+        $this->id = $id;
+        $this->content = $content;
     }
 
-    public function getTopic()
+    public function getTopicId()
     {
-        return $this->topic;
+        return $this->topicId;
     }
 
-    public function setTopic($topic): void
+    public function setTopic($topicId): void
     {
-        $this->topic = $topic;
+        $this->topicId = $topicId;
     }
 
     public function getUser()
@@ -33,23 +39,33 @@ class Post {
         $this->user = $user;
     }
 
-    public function getDateposted()
+    public function getDatePosted()
     {
-        return $this->dateposted;
+        return $this->datePosted;
     }
 
-    public function setDateposted($dateposted): void
+    public function setDatePosted($datePosted): void
     {
-        $this->dateposted = $dateposted;
+        $this->datePosted = $datePosted;
     }
 
-    public function getPost()
+    public function getId()
     {
-        return $this->post;
+        return $this->id;
     }
 
-    public function setPost($post): void
+    public function setId($id)
     {
-        $this->post = $post;
+        $this->id = $id;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function setContent($content): void
+    {
+        $this->content = $content;
     }
 }

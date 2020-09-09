@@ -9,20 +9,13 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $threads = $this->getDataFromModel();
+        $threads = $this->getThreads();
         $homeview = new HomeView();
         $homeview->renderPage('home.php', $threads);
     }
 
-    public function getDataFromModel() {
+    public function getThreads() {
         $model = new ThreadModel($this->db);
-        $threads = $model->getAllThreadsOrSubthreads(THREAD);
-        $subthreads = null;
-        foreach ($threads as $thread) {
-            $thread_name = $thread->getName();
-            $subthreads[$thread_name] = $model->getThreadsSubthreads($thread_name);
-        }
-        $threads_subthreads = ['threads' => $threads, 'subthreads' => $subthreads];
-        return $threads_subthreads;
+        return $model->getAllThreads();
     }
 }

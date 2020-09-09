@@ -2,23 +2,37 @@
 
 namespace views;
 
-class EditView extends View {
-    public function getThreadName($data) {
+class TopiceditView extends View
+{
+    public function getTopicName($data)
+    {
         return isset($data[0]) ? $data[0]->getName() : "";
     }
 
-    public function getThreadDescription($data) {
+    public function getTopicDescription($data)
+    {
         return isset($data[0]) ? $data[0]->getDescription() : "";
     }
 
-    public function isNewThread() {
-        if ($_GET['thread'] === 'newthread') {
+    public function getTopicId($data)
+    {
+        return isset($data[0]) ? $data[0]->getId() : "";
+    }
+
+    public function getThreadName() {
+        return $_GET['thread'];
+    }
+
+    public function isNewTopic()
+    {
+        if ($_GET['topic'] === 'newtopic') {
             return true;
         }
         return false;
     }
 
-    public function getActionName() {
+    public function getActionName()
+    {
         if (!isset($_GET['action'])) {
             return 'update';
         }

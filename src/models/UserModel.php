@@ -8,7 +8,7 @@ use PDO;
 
 class UserModel extends Model {
 
-    private function dataValid($postdata): bool {
+    private function dataValid($postdata) {
         if (!isset($postdata) || empty($postdata)) {
             return false;
         }
@@ -106,6 +106,24 @@ class UserModel extends Model {
 
     }
 
+    private function findUserById(int $id) {
+        $statement = $this->db->prepare(
+            "SELECT users.email, passwords.password, users.username, users.id FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.id=:id;"
+        );
+        $statement->execute(
+            [
+                ':id' => $id
+            ]
+        );
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $result = $statement->fetch();
+        $user = $this->createUser($result);
+        if ($this->checkIfAdmin($user->getId())) {
+            $user->setAdministrator(true);
+        }
+        return $user;
+    }
+
     private function findUserByEmail(string $email) {
         $statement = $this->db->prepare(
             "SELECT users.email, passwords.password, users.username, users.id FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.email=:email;"
@@ -154,6 +172,17 @@ class UserModel extends Model {
     public function removeUser() {
     }
 
-    public function changeUserData() {
+    public function changeUsername($id, $username) {
+        $user = $this->findUserById($id);
     }
+
+    public function changeEmail($id, $email) {
+        $user = $this->findUserById($id);
+    }
+
+    public function changePassword($id, $password) {
+        $user = $this->findUserById($id);
+    }
+
+    public function changeProfilePicture($id) {}
 }

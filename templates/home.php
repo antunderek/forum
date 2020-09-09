@@ -6,31 +6,26 @@
     <?php if (\classes\SessionWrapper::has('administrator')): ?>
         <a href="/admin">Administrator panel</a>
     <?php endif; ?>
+    <a href="/profile">My profile</a>
     <a href="/logout">Logout</a>
 <?php else: ?>
     <a href="/login">Login</a>
     <a href="/signup">Signup</a>
 <?php endif; ?>
 
-   <?php foreach ($data['threads'] as $thread):?>
-<table border="1">
-    <tr>
-        <th>Thread</th>
-        <th>Description</th>
-        <th>Subthreads</th>
-        <th>Topics</th>
-        <th>Posts</th>
-    </tr>
-
-    <tr>
-        <td><b><?= $thread->getName() ?></b></td>
-        <td><?= $thread->getDescription() ?></td>
-    </tr>
-    <?php foreach($data['subthreads'][$thread->getName()] as $subthread): ?>
+   <?php foreach ($data as $thread):?>
+    <table border="1">
         <tr>
-            <td><?= $subthread->getName() ?></td>
-            <td><?= $subthread->getDescription() ?></td>
+            <th>Thread</th>
+            <th>Description</th>
+            <th>Subthreads</th>
+            <th>Topics</th>
+            <th>Posts</th>
         </tr>
-    <?php endforeach; ?>
+            <tr>
+                <td><a href="topic/index?thread=<?= $thread->getName() ?>"><b><?= $thread->getName() ?></b></a></td>
+                <td><?= $thread->getDescription() ?></td>
+            </tr>
+        </a>
     </table>
-<?php endforeach; ?>
+   <?php endforeach; ?>

@@ -6,7 +6,7 @@ use PDO;
 use classes\ForumThread;
 
 class ThreadModel extends Model {
-    //Ukloni subthreadove za sada
+
     private function dataValid($postdata): bool {
         if (!isset($postdata) || empty($postdata)) {
             return false;
@@ -19,56 +19,30 @@ class ThreadModel extends Model {
         return true;
     }
 
-    private function createArrayOfThreadsOrSubthreads($threads, $thread_name = null) {
+    private function createArrayOfThreads($threads) {
         $threadArray = array();
         foreach($threads as $key => $thread) {
-            $threadArray[] = new ForumThread($thread['name'], $thread['description'], $thread_name);
+            $threadArray[] = new ForumThread($thread['name'], $thread['description']);
         }
         return $threadArray;
     }
 
-    public function getAllThreadsOrSubthreads($type) {
-        $query = [
-            THREAD => "SELECT name, description FROM threads",
-            SUBTHREAD => "SELECT name, description FROM subthreads",
-        ];
-        $statement = $this->db->prepare($query[$type]);
+    public function getAllThreads() {
+        $statement = $this->db->prepare("SELECT name, description FROM threads");
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $data= $this->createArrayOfThreadsOrSubthreads($data);
+        $data= $this->createArrayOfThreads($data);
         return $data;
     }
 
-    public function getThreadsSubthreads($thread_id) {
-        $statement = $this->db->prepare("SELECT subthreads.name, subthreads.description FROM subthreads INNER JOIN threads ON subthreads.thread_id = threads.id WHERE threads.name = :thread_id");
-        $statement->execute([':thread_id' => $thread_id]);
-        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $data = $this->createArrayOfThreadsOrSubthreads($data, $thread_id);
-        return $data;
-    }
-
-    // Reformatirati, razdvojiti promjeniti nazive
-    public function getData($name, $type = THREAD, $thread_name = null) {
-        $query = [
-            THREAD => "SELECT name, description FROM threads WHERE name=:name",
-            SUBTHREAD => "SELECT subthreads.name, subthreads.description FROM subthreads 
-                          INNER JOIN threads ON subthreads.thread_id=threads.id 
-                          WHERE threads.name=:thread_name AND subthreads.name=:name"
-        ];
-        $statement = $this->db->prepare($query[$type]);
-        if ($type === THREAD) {
-            $statement->execute([
-                ':name' => $name
-            ]);
-        } else {
-            $statement->execute([
-                ':name' => $name,
-                ':thread_name' => $thread_name
-            ]);
-        }
+    public function getThread($name) {
+        $statement = $this->db->prepare("SELECT name, description FROM threads WHERE name=:name");
+        $statement->execute([
+            ':name' => $name
+        ]);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $statement->fetch();
-        $data[] = new ForumThread($result['name'], $result['description'], $thread_name);
+        $data[] = new ForumThread($result['name'], $result['description']);
         return $data;
     }
 

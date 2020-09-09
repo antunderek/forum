@@ -7,6 +7,9 @@ class SessionWrapper {
         return !isset($key) ? isset($_SESSION[$name]) : isset($_SESSION[$name][$key]);
     }
     public static function get($name, $key=null) {
+        if (!SessionWrapper::has($name)) {
+            return;
+        }
         if (isset($key)) {
             return $_SESSION[$name][$key];
         }

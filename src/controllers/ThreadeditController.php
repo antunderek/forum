@@ -6,8 +6,8 @@ use views\EditView;
 use models\ThreadModel;
 use classes\SessionWrapper;
 
-class EditController extends Controller {
-    //construct provjeri da li je administrator
+class ThreadeditController extends Controller {
+    //construct check if administrator add model to construct
     public function index()
     {
         if (!isset($_GET['thread']) || !SessionWrapper::has('administrator')) {
@@ -15,26 +15,15 @@ class EditController extends Controller {
             die();
         }
         $name = $_GET['thread'];
-        if (isset($_GET['subthread'])) {
-            $threads = $this->getDataFromModel($_GET['subthread'], SUBTHREAD, $name);
-        }
-        else {
-            $threads = $this->getDataFromModel($name);
-            $threads['subthreads'] = $this->getAllThreadSubthreads($name);
-        }
+        $threads = $this->getDataFromModel($name);
         $editview = new EditView();
         $editview->renderPage('edit_thread.php', $threads);
-        unset($_GET['thread'], $_GET['subthread']);
+        unset($_GET['thread']);
     }
 
-    private function getDataFromModel($name, $type = THREAD, $thread_name = null) {
+    private function getDataFromModel($name) {
         $model = new ThreadModel($this->db);
-        return $model->getData($name, $type, $thread_name);
-    }
-
-    private function getAllThreadSubthreads($thread_name) {
-        $model = new ThreadModel($this->db);
-        return $model->getThreadsSubthreads($thread_name);
+        return $model->getThread($name);
     }
 
     private function passUpdateData($params) {
@@ -54,10 +43,12 @@ class EditController extends Controller {
 
     public function update() {
         $this->passUpdateData($this->paramshandler->retreiveData());
+        header('Location: /admin');
     }
 
     public function create() {
         $this->passCreateData($this->paramshandler->retreiveData());
+        header('Location: /admin');
     }
 
     public function delete() {
