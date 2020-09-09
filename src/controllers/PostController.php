@@ -12,27 +12,46 @@ class PostController extends Controller {
 
     public function create() {
         $params = $this->paramshandler->retreiveData();
-        if (!SessionWrapper::has('administrator') || SessionWrapper::get('id') !== $params['user_id']) {
-            echo "Not allowed to make changes";
-            die();
+        if (SessionWrapper::has('administrator') || SessionWrapper::get('id') === $params['user_id']) {
+            $model = new PostModel($this->db);
+            $model->setPost($params);
+            header("Location: /topic/posts?topic={$params['topic_id']}");
         }
-        $model = new PostModel($this->db);
-        $model->setPost($params);
-        header("Location: /topic/posts?topic={$params['topic_id']}");
+        echo "Not allowed to make changes";
+        die();
     }
 
-    // Post sadrzi varijable
-    public function editPost($postId, $data) {
+    public function editPost() {
         $params = $this->paramshandler->retreiveData();
-        if (!SessionWrapper::has('administrator') || SessionWrapper::get('id') !== $params['user_id']) {
-            echo "Not allowed to make changes";
-            die();
+        if (SessionWrapper::has('administrator') || SessionWrapper::get('id') === $params['user_id']) {
+            $model = new PostModel($this->db);
+            $model->updatePost($params);
+            header("Location: /topic/posts?topic={$params['topic_id']}");
         }
-        $model = new PostModel($this->db);
-        $model->updatePost($params);
-        header("Location: /topic/posts?topic={$params['topic_id']}");
+        echo "Not allowed to make changes";
+        die();
     }
 
     // Only removes content and ?name of the poster, leaves a message 'post deleted'
-    public function removePost($postId) {}
+    public function deletePost() {
+        $params = $this->paramshandler->retreiveData();
+        if (SessionWrapper::has('administrator') || SessionWrapper::get('id') === $params['user_id']) {
+            $model = new PostModel($this->db);
+            $model->deletePost($params);
+            header("Location: /topic/posts?topic={$params['topic_id']}");
+        }
+        echo "Not allowed to make changes";
+        die();
+    }
+
+    public function removePost() {
+        $params = $this->paramshandler->retreiveData();
+        if (SessionWrapper::has('administrator')) {
+            $model = new PostModel($this->db);
+            $model->removePost($params);
+            header("Location: /topic/posts?topic={$params['topic_id']}");
+        }
+        echo "Not allowed to make changes";
+        die();
+    }
 }

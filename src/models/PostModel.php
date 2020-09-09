@@ -75,7 +75,39 @@ class PostModel extends Model {
             ':content' => $post->getContent(),
             ':postId' => $post->getId(),
         ]);
-        return $post;
     }
 
+    public function deletePost($params) {
+        if (!$this->dataValid($params)) {
+            echo "here goes 404";
+            die();
+        }
+        $post = $this->getPost($params['id']);
+        if (!$post) {
+            echo "404";
+            die();
+        }
+        $post->setContent($params['content']);
+        $statement = $this->db->prepare("UPDATE posts SET content=:content WHERE id=:postId");
+        $statement->execute([
+            ':content' => $post->getContent(),
+            ':postId' => $post->getId(),
+        ]);
+    }
+
+    public function removePost($params) {
+        if (!$this->dataValid($params)) {
+            echo "here goes 404";
+            die();
+        }
+        $post = $this->getPost($params['id']);
+        if (!$post) {
+            echo "404";
+            die();
+        }
+        $statement = $this->db->prepare("DELETE FROM posts WHERE id=:postId");
+        $statement->execute([
+            ':postId' => $post->getId(),
+        ]);
+    }
 }
