@@ -1,22 +1,64 @@
 <?php
 
 namespace controllers;
+use PDO;
 
 use views\ProfileView;
 use models\UserModel;
 use classes\SessionWrapper;
+use classes\ImageUpload;
 
 class ProfileController extends Controller
 {
-    public function index()
+    protected $userModel;
+
+    public function __construct(PDO $db)
     {
-        $adminview = new ProfileView();
-        $adminview->renderPage('profile.php', );
+        parent::__construct($db);
+        $this->userModel = new UserModel($db);
     }
 
-    public function getDataFromModel()
+    public function index()
     {
-        $model = new UserModel($this->db);
-        return $model->getUser();
+        if (!SessionWrapper::has('id')) {
+            echo "You have to log in to access this page";
+            die();
+        }
+        $adminview = new ProfileView();
+        $user[] = $this->getDataFromModel();
+        $adminview->renderPage('profile.php', $user);
+    }
+
+    private function getDataFromModel()
+    {
+        return $this->userModel->getUserById(SessionWrapper::get('id'));
+    }
+
+    // Update user profile
+    public function update() {
+        $params = $this->paramshandler->retreiveData();
+        $this->userModel->updateUsernameEmail(SessionWrapper::get('id'), $params);
+    }
+
+    public function password() {
+        $params = $this->paramshandler->retreiveData();
+        $this->userModel->changePassword(SessionWrapper::get('id'), $params);
+    }
+
+    // Deletes user profile
+    public function delete() {
+        if (SessionWrapper::has('administrator') || SessionWrapper::has('id')) {
+            $this->userModel->removeUser(SessionWrapper::get('id'));
+            header('Location: /logout');
+        }
+        else {
+            echo "You have to log in to access this page";
+            die();
+        }
+    }
+
+    public function image() {
+        $image = new ImageUpload();
+        $image->upload();
     }
 }

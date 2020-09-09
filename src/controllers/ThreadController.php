@@ -6,7 +6,7 @@ use views\EditView;
 use models\ThreadModel;
 use classes\SessionWrapper;
 
-class ThreadeditController extends Controller {
+class ThreadController extends Controller {
     //construct check if administrator add model to construct
     public function index()
     {
@@ -17,7 +17,7 @@ class ThreadeditController extends Controller {
         $name = $_GET['thread'];
         $threads = $this->getDataFromModel($name);
         $editview = new EditView();
-        $editview->renderPage('edit_thread.php', $threads);
+        $editview->renderPage('editThread.php', $threads);
         unset($_GET['thread']);
     }
 

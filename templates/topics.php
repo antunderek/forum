@@ -1,5 +1,5 @@
 <h1>Topics for <?= $_GET['thread'] ?></h1>
-<a href="/topicedit/index?thread=<?= $_GET['thread'] ?>&topic=newtopic&action=create">Create new topic</a>
+<a href="/topic/edit?thread=<?= $_GET['thread'] ?>&topic=newtopic&action=create">Create new topic</a>
 
 <table border="1">
     <tr>
@@ -16,8 +16,8 @@
         <td><?= $topic->getTopicCreator() ?></td>
         <td><?= $topic->getDateCreated() ?></td>
         <td>Post</td>
-        <?php if(\classes\SessionWrapper::has('administrator') || $topic->getTopicCreator() === \classes\SessionWrapper::get('id')): ?>
-            <td><a href="/topicedit/index?thread=<?= $_GET['thread'] ?>&topic=<?= $topic->getId() ?>&action=update">Edit</a></td>
+        <?php if(\classes\SessionWrapper::has('administrator') || $topic->getTopicCreator() === \classes\SessionWrapper::get('name')): ?>
+            <td><a href="/topic/edit?thread=<?= $_GET['thread'] ?>&topic=<?= $topic->getId() ?>&action=update">Edit</a></td>
         <?php endif; ?>
     </tr>
     <?php endforeach; ?>

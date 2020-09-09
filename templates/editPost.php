@@ -1,0 +1,11 @@
+<h1>Edit post</h1>
+<form action="/post/update" method="POST">
+    <label for="content">Name:</label>
+    <br>
+    <textarea maxlength="255" name="content"><?= $this->getContent($data) ?></textarea>
+    <br>
+    <input type="hidden" name="id" value="<?= $this->getId($data) ?>"?>
+    <input type="hidden" name="user" value="<?= $this->getUser($data) ?>"?>
+    <input type="hidden" name="topic" value="<?= $this->getTopic($data) ?>"?>
+    <input type="submit">
+</form>

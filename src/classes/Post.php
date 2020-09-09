@@ -3,7 +3,7 @@
 namespace classes;
 
 class Post {
-    protected $topicId;
+    protected $topic;
     protected $user;
     protected $datePosted;
     protected $id;
@@ -11,22 +11,22 @@ class Post {
 
     protected $content;
 
-    public function __construct($topicId, $user, $content, $id = null, $datePosted = null) {
-        $this->topicId = $topicId;
+    public function __construct($topic, $user, $content, $id = null, $datePosted = null) {
+        $this->topic = $topic;
         $this->user = $user;
         $this->datePosted = $datePosted;
         $this->id = $id;
         $this->content = $content;
     }
 
-    public function getTopicId()
+    public function getTopic()
     {
-        return $this->topicId;
+        return $this->topic;
     }
 
-    public function setTopic($topicId): void
+    public function setTopic($topic): void
     {
-        $this->topicId = $topicId;
+        $this->topic = $topic;
     }
 
     public function getUser()

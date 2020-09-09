@@ -1,6 +1,7 @@
 <?php
 
 namespace models;
+use classes\SessionWrapper;
 use PDO;
 use classes\Post;
 
@@ -52,7 +53,7 @@ class PostModel extends Model {
         $post = new Post($params['topic_id'], $params['user_id'], $params['content']);
         $statement = $this->db->prepare("INSERT INTO posts(topic_id, user_id, content) VALUES (:topicId, :userId, :content)");
         $statement->execute([
-            ':topicId' => $post->getTopicId(),
+            ':topicId' => $post->getTopic(),
             ':userId' => $post->getUser(),
             ':content' => $post->getContent(),
         ]);
@@ -67,6 +68,10 @@ class PostModel extends Model {
         $post = $this->getPost($params['id']);
         if (!$post) {
             echo "404";
+            die();
+        }
+        if ($post->getUser() !== $params['user'] && !SessionWrapper::has('administrator')) {
+            echo 'You are not allowed to make changes';
             die();
         }
         $post->setContent($params['content']);
@@ -87,7 +92,11 @@ class PostModel extends Model {
             echo "404";
             die();
         }
-        $post->setContent($params['content']);
+        if (!SessionWrapper::has('administrator') && $post->getUser() !== SessionWrapper::get('id')) {
+            echo 'You are not allowed to make changes';
+            die();
+        }
+        $post->setContent('Post has been deleted.');
         $statement = $this->db->prepare("UPDATE posts SET content=:content WHERE id=:postId");
         $statement->execute([
             ':content' => $post->getContent(),
