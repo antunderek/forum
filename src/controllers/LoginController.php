@@ -10,11 +10,8 @@ class LoginController extends Controller {
     public function index() {
         $loginview = new LoginView();
         $loginview->renderPage('signin.php');
-        if ($this->checkErrors()) {
-            //Dodati u html i posebno renderati?
-            echo SessionWrapper::get('login_error');
-            SessionWrapper::end('login_error');
-        }
+        SessionWrapper::end('temp_data');
+        SessionWrapper::end('login_error');
     }
 
     private function passDataToModel($postData) {
@@ -30,6 +27,9 @@ class LoginController extends Controller {
         $this->passDataToModel($this->getParams());
         if ($this->checkErrors()) {
             header('Location: /login');
+        }
+        else {
+            header('Location: /');
         }
     }
 }

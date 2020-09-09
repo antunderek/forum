@@ -1,7 +1,8 @@
 <?php
 
 namespace views;
-use views\View;
+
+use classes\ForumThread;
 
 class HomeView extends View {
 }

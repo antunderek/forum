@@ -6,13 +6,14 @@ class User {
     protected $username;
     protected $password;
     protected $email;
+    protected $id;
     protected $administrator;
 
-    public function __construct($email, $password, $username = null) {
+    public function __construct($email, $password, $username = null, $id = null) {
         $this->username = $username;
         $this->password = $password;
         $this->email = $email;
-        //$this->administrator = $administrator;
+        $this->id = $id;
     }
 
     public function getUsername()
@@ -43,6 +44,16 @@ class User {
     public function setEmail($email): void
     {
         $this->email = $email;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId($id): void
+    {
+        $this->id = $id;
     }
 
     public function getAdministrator()
