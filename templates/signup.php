@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-<body>
 <?php if ($this->userLoggedIn()): ?>
     <h2>You are already logged in as <?= \classes\SessionWrapper::get('name') ?></h2>
 <?php else: ?>
@@ -21,5 +18,3 @@
         <input type="submit">
     </form>
 <?php endif; ?>
-</body>
-</html>

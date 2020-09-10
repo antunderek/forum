@@ -18,5 +18,26 @@ class ImageUpload {
             echo "File is not an image.";
             $valid = false;
         }
+
+        if ($valid === false) {
+            echo "file was not uploaded";
+            return;
+        }
+        if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
+        }
+    }
+
+    public function checkFileSize() {
+        if ($_FILES["image"]["size"] > 2000000) {
+            return false;
+        }
+        return true;
+    }
+
+    public function checkFormat($imageFileType) {
+        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+            return false;
+        }
+        return true;
     }
 }

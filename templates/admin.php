@@ -1,7 +1,7 @@
 <h1>Administrator panel</h1>
 
 <h2>Edit threads</h2>
-<table border="1">
+<table class="table">
     <tr>
         <th>Thread</th>
         <th>Description</th>
@@ -26,7 +26,8 @@
 <a href="/thread/index?thread=newthread&action=create"><button>Add thread</button></a>
 
 <h2>Users</h2>
-<table border="1">
+
+<table class="table"">
     <tr>
         <th>ID</th>
         <th>Username</th>
@@ -42,3 +43,8 @@
         </tr>
     <?php endforeach; ?>
 </table>
+<div class="columns is-centered">
+<div class="column is-half">
+    First column
+</div>
+</div>

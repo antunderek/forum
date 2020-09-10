@@ -14,7 +14,9 @@ abstract class View {
         return $output;
     }
 
-    public function renderPage(string $template, array $data = []) {
+    public function renderPage(string $template, array $data = [], array $headerData = [], array $footerData = []) {
+        echo $this->render('header.php', $headerData);
         echo $this->render($template, $data);
+        echo $this->render('footer.php', $footerData);
     }
 }
