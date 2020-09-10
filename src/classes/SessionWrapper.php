@@ -20,7 +20,7 @@ class SessionWrapper {
         return $_SESSION[$name] = $value;
     }
 
-    public static function end($name) {
+    public static function unset($name) {
         if (self::has($name)) {
             unset($_SESSION[$name]);
         }

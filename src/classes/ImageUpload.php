@@ -4,7 +4,7 @@ namespace classes;
 
 class ImageUpload {
     public function upload() {
-        $targetFile = IMAGE_PATH . basename($_FILES["image"]["name"]);
+        $targetFile = '/var/www/html/forum/public/img/' . basename($_FILES["image"]["name"]);
         $valid = true;
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
@@ -23,7 +23,9 @@ class ImageUpload {
             echo "file was not uploaded";
             return;
         }
+
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
+            return $_FILES['image']['name'];
         }
     }
 

@@ -58,7 +58,8 @@ class ProfileController extends Controller
     }
 
     public function image() {
-        $image = new ImageUpload();
-        $image->upload();
+        $imgUpload = new ImageUpload();
+        $img = $imgUpload->upload();
+        $this->userModel->changeProfilePicture(SessionWrapper::get('id'), $img);
     }
 }

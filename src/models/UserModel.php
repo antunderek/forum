@@ -36,7 +36,7 @@ class UserModel extends Model {
         $username = isset($data['username']) ? trim($data['username']) : null;
         $id = isset($data['id']) ? $data['id'] : null;
         $password = $newuser ? password_hash(trim($data['password']), PASSWORD_ARGON2ID) : trim($data['password']);
-        return new User(trim($data['email']), $password, $username, $id);
+        return new User(trim($data['email']), $password, $username, $id, $data['image']);
     }
 
     private function createArrayOfUsers($users) {
@@ -242,7 +242,7 @@ class UserModel extends Model {
     }
 
     public function changeProfilePicture($id, $image) {
-       $statement = $this->db->prepare("INSERT INTO users (image) VALUES (:image) WHERE id=:id");
+       $statement = $this->db->prepare("UPDATE users SET image=:image WHERE id=:id");
        $statement->execute([':image' => $image, ':id' => $id]);
     }
 }
