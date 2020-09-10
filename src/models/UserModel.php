@@ -1,11 +1,10 @@
 <?php
 
 namespace models;
+use PDO;
 
 use classes\User;
 use classes\SessionWrapper;
-use MongoDB\Driver\Session;
-use PDO;
 
 class UserModel extends Model {
 
@@ -122,10 +121,15 @@ class UserModel extends Model {
         return $this->createArrayOfUsers($users);
     }
 
-    public function getUserById(int $id) {
+    public function getUserById(int $id, $password = false) {
         $statement = $this->db->prepare(
-            "SELECT users.email, passwords.password, users.username, users.id FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.id=:id;"
+            "SELECT users.email, passwords.password, users.username, users.id, users.image FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.id=:id;"
         );
+        if (!$password) {
+            $statement = $this->db->prepare(
+        "SELECT users.email, users.username, users.id, users.image FROM users WHERE users.id=:id;"
+            );
+        }
         $statement->execute(
             [
                 ':id' => $id
@@ -133,6 +137,9 @@ class UserModel extends Model {
         );
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $statement->fetch();
+        if (!$password) {
+            $result['password'] = null;
+        }
         $user = $this->createUser($result);
         if ($this->checkIfAdmin($user->getId())) {
             $user->setAdministrator(true);
@@ -142,7 +149,7 @@ class UserModel extends Model {
 
     private function getUserByEmail(string $email) {
         $statement = $this->db->prepare(
-            "SELECT users.email, passwords.password, users.username, users.id FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.email=:email;"
+            "SELECT users.email, passwords.password, users.username, users.id, users.image FROM users INNER JOIN passwords ON users.id = passwords.user_id WHERE users.email=:email;"
         );
         $statement->execute(
             [
@@ -211,7 +218,7 @@ class UserModel extends Model {
             SessionWrapper::set('password_error', 'Please input data in all fields.');
             return;
         }
-        $dbUser = $this->getUserById($id);
+        $dbUser = $this->getUserById($id, true);
         if (!isset($dbUser) || !password_verify(trim($params['current-password']), $dbUser->getPassword())) {
             $this->tempStoreUserInput($params);
             SessionWrapper::set('password_error', 'Password incorrect');

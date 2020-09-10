@@ -17,7 +17,7 @@ class ThreadController extends Controller {
         $name = $_GET['thread'];
         $threads = $this->getDataFromModel($name);
         $editview = new EditView();
-        $editview->renderPage('editThread.php', $threads);
+        $editview->renderPage('editThread', $threads);
         unset($_GET['thread']);
     }
 

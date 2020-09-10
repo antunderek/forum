@@ -17,7 +17,7 @@ class AdminController extends Controller {
         $users = $this->getUsers();
         $data = ['threads' => $threads, 'users' => $users];
         $adminview = new AdminView();
-        $adminview->renderPage('admin.php', $data);
+        $adminview->renderPage('admin', $data);
     }
 
     public function getDataFromModel() {

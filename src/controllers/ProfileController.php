@@ -26,7 +26,7 @@ class ProfileController extends Controller
         }
         $adminview = new ProfileView();
         $user[] = $this->getDataFromModel();
-        $adminview->renderPage('profile.php', $user);
+        $adminview->renderPage('profile', $user);
     }
 
     private function getDataFromModel()

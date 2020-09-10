@@ -1,7 +1,7 @@
 <?php
 
 namespace controllers;
-use classes\User;
+//use classes\User;
 use models\UserModel;
 use PDO;
 
@@ -27,7 +27,7 @@ class TopicController extends Controller {
         $thread = $_GET['thread'];
         $topics = $this->getThreadTopics($thread);
         $homeView = new TopicView();
-        $homeView->renderPage('topics.php', $topics);
+        $homeView->renderPage('topics', $topics);
     }
 
     public function posts() {
@@ -36,11 +36,10 @@ class TopicController extends Controller {
         $topicId = $_GET['topic'];
         $topic = $this->getTopic($topicId);
         $topicId = $topic->getId();
-        $posts = $this->getPosts($topicId);
-        $users = $this->getUsers($posts);
-        $data = ['topic' => $topic, 'posts' => $posts];
+        $postsUsers = $this->getPostsUsers($topicId);
+        $data = ['topic' => $topic, 'postsUsers' => $postsUsers];
         $postsView = new PostView();
-        $postsView->renderPage('posts.php', $data);
+        $postsView->renderPage('posts', $data);
     }
 
     private function getAllTopics() {
@@ -55,20 +54,20 @@ class TopicController extends Controller {
         return $this->topicModel->getTopic($topicId);
     }
 
-    private function getPosts($topicId) {
-        $model = new PostModel($this->db);
-        return $model->getPosts($topicId);
-    }
-
-    private function getUsers($posts) {
-        $model = new UserModel($this->db);
-        $users = array();
+    private function getPostsUsers($topicId) {
+        $userModel = new UserModel($this->db);
+        $postModel = new PostModel($this->db);
+        $posts = $postModel->getPosts($topicId);
+        $usersPosts = array();
         foreach ($posts as $post) {
-            $user[] = $model->getUserById($post->getUser());
+            $user = $userModel->getUserById($post->getUser());
+            $usersPosts[] = [
+                'post' => $post,
+                'user' => $user,
+            ];
         }
-        return $users;
+        return $usersPosts;
     }
-
 
     public function edit()
     {
@@ -82,7 +81,7 @@ class TopicController extends Controller {
             $topics[] = $this->getDataFromModel($id);
         }
         $editview = new TopicView();
-        $editview->renderPage('editTopic.php', $topics);
+        $editview->renderPage('editTopic', $topics);
         unset($_GET['thread']);
     }
 

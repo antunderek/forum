@@ -18,7 +18,7 @@ class PostController extends Controller {
             $post[] = $this->getPost($id);
         }
         $editview = new PostView();
-        $editview->renderPage('editPost.php', $post);
+        $editview->renderPage('editPost', $post);
         unset($_GET['id']);
     }
 

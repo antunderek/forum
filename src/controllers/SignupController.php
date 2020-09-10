@@ -9,7 +9,7 @@ use classes\SessionWrapper;
 class SignupController extends Controller {
     public function index() {
         $homeview = new SignupView();
-        $homeview->renderPage('signup.php');
+        $homeview->renderPage('signup');
         SessionWrapper::end('temp_data');
         SessionWrapper::end('register_error');
     }

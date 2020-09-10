@@ -1,6 +1,6 @@
 <p>Posts</p>
 
-<table border="1">
+<table class="table" border="1">
     <tr>
         <th><?= $data['topic']->getName() ?></th>
         <th><?= $data['topic']->getDateCreated() ?></th>
@@ -16,18 +16,24 @@
     </tr>
 </table>
 
-<?php foreach($data['posts'] as $post): ?>
-<table border="1">
+<?php foreach($data['postsUsers'] as $postUser): ?>
+<table class="table" border="1">
     <tr>
         <th></th>
-        <th><?= $post->getDatePosted() ?></th>
+        <th><?= $postUser['post']->getDatePosted() ?></th>
     </tr>
     <tr>
-        <td><?= $post->getUser() ?></td>
-        <td><?= $post->getContent() ?></td>
-        <?php if(\classes\SessionWrapper::has('administrator') || $post->getUser() === \classes\SessionWrapper::get('name')): ?>
-            <td><a href="/post/edit?id=<?= $post->getId() ?>">Edit</a></td>
-            <td><a href="/post/delete?id=<?= $post->getId() ?>&user=<?= $post->getUser() ?>&topic=<?= $data['topic']->getId() ?>">Delete</a></td>
+        <td>
+            <?= $postUser['user']->getUsername() ?>
+            <br>
+            <figure class="image is-128x128">
+                <img src="<?= IMAGE_PATH . $postUser['user']->getImage() ?>">
+            </figure>
+        </td>
+        <td><?= $postUser['post']->getContent() ?></td>
+        <?php if(\classes\SessionWrapper::has('administrator') || $postUser['post']->getUser() === \classes\SessionWrapper::get('id')): ?>
+            <td><a href="/post/edit?id=<?= $postUser['post']->getId() ?>">Edit</a></td>
+            <td><a href="/post/delete?id=<?= $postUser['post']->getId() ?>&user=<?= $postUser['post']->getUser() ?>&topic=<?= $data['topic']->getId() ?>">Delete</a></td>
         <?php endif; ?>
     </tr>
 </table>

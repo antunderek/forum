@@ -9,7 +9,7 @@ use classes\SessionWrapper;
 class LoginController extends Controller {
     public function index() {
         $loginview = new LoginView();
-        $loginview->renderPage('signin.php');
+        $loginview->renderPage('signin');
         SessionWrapper::end('temp_data');
         SessionWrapper::end('login_error');
     }

@@ -10,4 +10,8 @@ class ProfileView extends View {
     public function getEmail($data) {
         return $data[0]->getEmail();
     }
+
+    public function getImage($data) {
+        return $data[0]->getImage();
+    }
 }
