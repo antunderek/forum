@@ -1,6 +1,8 @@
 <?php
 
 namespace controllers;
+use classes\User;
+use models\UserModel;
 use PDO;
 
 use views\TopicView;
@@ -35,6 +37,7 @@ class TopicController extends Controller {
         $topic = $this->getTopic($topicId);
         $topicId = $topic->getId();
         $posts = $this->getPosts($topicId);
+        $users = $this->getUsers($posts);
         $data = ['topic' => $topic, 'posts' => $posts];
         $postsView = new PostView();
         $postsView->renderPage('posts.php', $data);
@@ -55,6 +58,15 @@ class TopicController extends Controller {
     private function getPosts($topicId) {
         $model = new PostModel($this->db);
         return $model->getPosts($topicId);
+    }
+
+    private function getUsers($posts) {
+        $model = new UserModel($this->db);
+        $users = array();
+        foreach ($posts as $post) {
+            $user[] = $model->getUserById($post->getUser());
+        }
+        return $users;
     }
 
 

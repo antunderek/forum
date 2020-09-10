@@ -7,13 +7,15 @@ class User {
     protected $password;
     protected $email;
     protected $id;
+    protected $image;
     protected $administrator;
 
-    public function __construct($email, $password, $username = null, $id = null) {
+    public function __construct($email, $password, $username = null, $id = null, $image = 'default/default.jpg') {
         $this->username = $username;
         $this->password = $password;
         $this->email = $email;
         $this->id = $id;
+        $this->image = $image;
     }
 
     public function getUsername()
@@ -54,6 +56,16 @@ class User {
     public function setId($id): void
     {
         $this->id = $id;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image): void
+    {
+        $this->image = $image;
     }
 
     public function getAdministrator()

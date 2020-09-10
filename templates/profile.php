@@ -3,6 +3,7 @@
 <h2>Update profile</h2>
 
 <h3>Change profile picture</h3>
+<img src="<?= ?>">
 <form action="/profile/image" method="POST" enctype="multipart/form-data">
     <p>Upload profile image:</p>
     <br>

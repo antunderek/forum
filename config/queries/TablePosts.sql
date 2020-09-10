@@ -6,5 +6,5 @@ CREATE TABLE posts (
     content TEXT NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_topicid FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE,
-    CONSTRAINT fk_userid FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_userid FOREIGN KEY (user_id) REFERENCES users(id)
 );

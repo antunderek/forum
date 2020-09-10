@@ -43,7 +43,7 @@ class UserModel extends Model {
     private function createArrayOfUsers($users) {
         $usersArray = array();
         foreach($users as $key => $user) {
-            $usersArray[] = new User($user['email'], null, $user['username'], $user['id']);
+            $usersArray[] = new User($user['email'], null, $user['username'], $user['id'], $user['image']);
         }
         return $usersArray;
     }
@@ -234,6 +234,8 @@ class UserModel extends Model {
        $statement->execute([':id' => $id]);
     }
 
-    public function changeProfilePicture($id) {
+    public function changeProfilePicture($id, $image) {
+       $statement = $this->db->prepare("INSERT INTO users (image) VALUES (:image) WHERE id=:id");
+       $statement->execute([':image' => $image, ':id' => $id]);
     }
 }
