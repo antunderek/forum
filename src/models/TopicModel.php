@@ -54,10 +54,8 @@ class TopicModel extends Model {
 
     public function getTopic($topicId) {
         $statement = $this->db->prepare("
-            SELECT topics.name, topics.description, users.username AS user_id, topics.thread_id, topics.id, topics.created 
+            SELECT topics.name, topics.description, topics.user_id, topics.thread_id, topics.id, topics.created 
             FROM topics
-            INNER JOIN threads ON topics.thread_id = threads.id 
-            INNER JOIN users ON topics.user_id = users.id
             WHERE topics.id=:topicId
         ");
         $statement->execute([':topicId' => $topicId]);

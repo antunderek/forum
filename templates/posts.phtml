@@ -2,15 +2,27 @@
 
 <table class="table" border="1">
     <tr>
-        <th><?= $data['topic']->getName() ?></th>
+        <th></th>
         <th><?= $data['topic']->getDateCreated() ?></th>
+        <th></th>
+        <th></th>
     </tr>
     <tr>
-        <td><?= $data['topic']->getDescription() ?></td>
+
     </tr>
     <tr>
-        <td><?= $data['topic']->getTopicCreator() ?></td>
-        <?php if(\classes\SessionWrapper::has('administrator') || $data['topic']->getTopicCreator() === \classes\SessionWrapper::get('name')): ?>
+        <td>
+            <?= $data['user']->getUsername() ?>
+            <br>
+            <figure class="image is-128x128">
+                <img src="<?= IMAGE_PATH . $data['user']->getImage() ?>">
+            </figure>
+        </td>
+        <td>
+            <b><?= $data['topic']->getName() ?></b>
+            <?= $data['topic']->getDescription() ?>
+        </td>
+        <?php if(\classes\SessionWrapper::has('administrator') || $data['user']->getId() === \classes\SessionWrapper::get('id')): ?>
             <td><a href="/topic/edit?thread=<?= $data['topic']->getParent() ?>&topic=<?= $data['topic']->getId() ?>&action=update">Edit</a></td>
         <?php endif; ?>
     </tr>
@@ -21,6 +33,8 @@
     <tr>
         <th></th>
         <th><?= $postUser['post']->getDatePosted() ?></th>
+        <th></th>
+        <th></th>
     </tr>
     <tr>
         <td>

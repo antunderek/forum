@@ -19,8 +19,7 @@ class Router {
         $urlParts = explode('/', $urlParts['path']);
 
         if (!$this->validUserUrl($urlParts)) {
-            //404
-            throw new RouteNotFoundException('Route not found');
+            header('Location: /pagenotfound');
         }
 
         $this->removeTrailingSlash($urlParts);
@@ -58,11 +57,11 @@ class Router {
         $controllerpath = CONTROLLERS_PATH . $this->controller;
         $controllerfullpath = $controllerpath . '.php';
         if (!file_exists($controllerfullpath)) {
-            throw new RouteNotFoundException('Route not found ' . $controllerfullpath);
+            header('Location: /pagenotfound');
         }
         $this->controller= '\\controllers\\' . $this->controller;
         if (!method_exists($this->controller, $this->method)) {
-            throw new MethodNotAllowedException();
+            header('Location: /pagenotfound');
         }
 
         $path = array(

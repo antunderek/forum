@@ -44,7 +44,7 @@ class TopicController extends Controller {
             $this->redirectTo404();
         }
         $postsUsers = $this->getPostsUsers($topicId);
-        $data = ['topic' => $topic, 'postsUsers' => $postsUsers];
+        $data = ['topic' => $topic, 'user' => $user, 'postsUsers' => $postsUsers];
         $postsView = new PostView();
         $postsView->renderPage('posts', $data);
     }

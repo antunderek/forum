@@ -1,5 +1,7 @@
 <h1>Topics for <?= $_GET['thread'] ?></h1>
-<a href="/topic/edit?thread=<?= $_GET['thread'] ?>&topic=newtopic&action=create">Create new topic</a>
+<?php if(\classes\SessionWrapper::has('id')): ?>
+    <a href="/topic/edit?thread=<?= $_GET['thread'] ?>&topic=newtopic&action=create">Create new topic</a>
+<?php endif; ?>
 
 <table class="table" border="1">
     <tr>
