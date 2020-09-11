@@ -1,7 +1,6 @@
 <?php
 
 namespace controllers;
-//use classes\User;
 use models\UserModel;
 use PDO;
 
@@ -22,6 +21,7 @@ class TopicController extends Controller {
     public function index()
     {
         if(!isset($_GET['thread'])) {
+            $this->redirectTo404();
             header('Location: /');
         }
         $thread = $_GET['thread'];
@@ -30,12 +30,19 @@ class TopicController extends Controller {
         $homeView->renderPage('topics', $topics);
     }
 
+    // Grab all posts concerning topic, order them by date created
     public function posts() {
-        // Grab all posts concerning topic, order them by date created
-        // $homeview->renderPage('view.php', $posts);
+        if (empty($_GET['topic'])) {
+            echo 'here goes 404';
+            die();
+        }
         $topicId = $_GET['topic'];
         $topic = $this->getTopic($topicId);
         $topicId = $topic->getId();
+        if (!isset($topicId)) {
+            echo 'here goes 404';
+            die();
+        }
         $postsUsers = $this->getPostsUsers($topicId);
         $data = ['topic' => $topic, 'postsUsers' => $postsUsers];
         $postsView = new PostView();

@@ -20,12 +20,12 @@ class AdminController extends Controller {
         $adminview->renderPage('admin', $data);
     }
 
-    public function getDataFromModel() {
+    private function getDataFromModel() {
         $model = new ThreadModel($this->db);
         return $model->getAllThreads();
     }
 
-    public function getUsers() {
+    private function getUsers() {
         $model = new UserModel($this->db);
         return $model->getUsers();
     }
