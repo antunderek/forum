@@ -1,6 +1,8 @@
 <?php
 
 namespace controllers;
+use classes\ParamsHandler;
+use classes\SessionWrapper;
 use models\UserModel;
 use PDO;
 
@@ -30,18 +32,16 @@ class TopicController extends Controller {
         $homeView->renderPage('topics', $topics);
     }
 
-    // Grab all posts concerning topic, order them by date created
     public function posts() {
         if (empty($_GET['topic'])) {
-            echo 'here goes 404';
-            die();
+            $this->redirectTo404();
         }
         $topicId = $_GET['topic'];
         $topic = $this->getTopic($topicId);
+        $user = $this->getTopicCreator($topic->getTopicCreator());
         $topicId = $topic->getId();
         if (!isset($topicId)) {
-            echo 'here goes 404';
-            die();
+            $this->redirectTo404();
         }
         $postsUsers = $this->getPostsUsers($topicId);
         $data = ['topic' => $topic, 'postsUsers' => $postsUsers];
@@ -61,6 +61,11 @@ class TopicController extends Controller {
         return $this->topicModel->getTopic($topicId);
     }
 
+    private function getTopicCreator($userId) {
+        $userModel = new UserModel($this->db);
+        return $userModel->getUserById($userId);
+    }
+
     private function getPostsUsers($topicId) {
         $userModel = new UserModel($this->db);
         $postModel = new PostModel($this->db);
@@ -78,18 +83,25 @@ class TopicController extends Controller {
 
     public function edit()
     {
+        if (!$this->checkUser()) {
+            $this->redirectTo404();
+        }
         if (!isset($_GET['topic']) || $_GET['topic'] === 'newtopic') {
-            // redirect to create new topic
-            // echo 'here goes 404 controller';
-            // die();
             $topics = [];
         } else {
             $id = $_GET['topic'];
             $topics[] = $this->getDataFromModel($id);
+            if (($topics[0]->getTopicCreator() !== SessionWrapper::get('name')) && !SessionWrapper::has('administrator')) {
+                $this->redirectTo404();
+            }
         }
+
         $editview = new TopicView();
         $editview->renderPage('editTopic', $topics);
-        unset($_GET['thread']);
+    }
+
+    private function checkUser() {
+        return SessionWrapper::has('id');
     }
 
     private function getDataFromModel($id) {
@@ -97,7 +109,7 @@ class TopicController extends Controller {
     }
 
     private function passUpdateData($params) {
-        $this->topicModel->editTopic($params);
+        return $this->topicModel->editTopic($params);
     }
 
     private function passCreateData($params) {
@@ -105,29 +117,42 @@ class TopicController extends Controller {
     }
 
     private function passDeleteData($params) {
-        $this->topicModel->removeTopic($_GET['topic']);
+        return $this->topicModel->removeTopic($_GET['topic']);
     }
 
     public function update() {
-        $currentThread = $_POST['current_thread'];
-        $this->passUpdateData($this->paramshandler->retreiveData());
-        header("Location: /topic/index?thread={$currentThread}");
+        if (!$this->checkUser() && !SessionWrapper::get('administrator')) {
+            $this->redirectTo404();
+        }
+        $currentThread = ParamsHandler::getSafe('current_thread');
+        if (!$this->passUpdateData($this->paramshandler->retreiveData())) {
+            $this->redirectTo404();
+        }
+        $this->redirect("/topic/index?thread={$currentThread}");
     }
 
     public function create() {
+        if (!$this->checkUser() && !SessionWrapper::get('administrator')) {
+            $this->redirectTo404();
+        }
         $currentThread = $_POST['current_thread'];
         $this->passCreateData($this->paramshandler->retreiveData());
-        header("Location: /topic/index?thread={$currentThread}");
+        $this->redirect("/topic/index?thread={$currentThread}");
     }
 
     public function delete() {
-        if (isset($_GET['topic'])) {
-            $currentThread = $_GET['thread'];
-            $this->passDeleteData($this->paramshandler->retreiveData());
-            header("Location: /topic/index?thread={$currentThread}");
+        if (!$this->checkUser() && !SessionWrapper::get('administrator')) {
+            $this->redirectTo404();
+        }
+        if (ParamsHandler::has('topic')) {
+            $currentThread = ParamsHandler::getSafe('thread');
+            if (!$this->passDeleteData($this->paramshandler->retreiveData())) {
+                $this->redirectTo404();
+            }
+            $this->redirect("/topic/index?thread={$currentThread}");
         }
         else {
-            header("Location: /");
+            $this->redirectTo404();
         }
     }
 }

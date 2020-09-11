@@ -16,12 +16,6 @@ class ThreadController extends Controller {
         $this->checkIfAdmin();
     }
 
-    private function checkIfAdmin() {
-        if (!SessionWrapper::has('administrator')) {
-            $this->redirectTo404();
-        }
-    }
-
     public function edit()
     {
         if (!ParamsHandler::has('thread')) {

@@ -41,4 +41,11 @@ abstract class Controller
         $model = new UserModel($this->db);
         $model->doSessionCheck();
     }
+
+    protected function checkIfAdmin() {
+        if (!SessionWrapper::has('administrator')) {
+            $this->redirectTo404();
+        }
+        return true;
+    }
 }

@@ -11,17 +11,15 @@ class ImageUpload {
         if (isset($_POST['submit'])) {
             $check = getimagesize($_FILES["image"]["tmp_name"]);
             if ($check !== false) {
-                echo "File is an image - " . $check["mime"] . ".";
                 $valid = true;
             }
         } else {
-            echo "File is not an image.";
             $valid = false;
         }
 
         if ($valid === false) {
-            echo "file was not uploaded";
-            return;
+            header('Location: /profile');
+            exit;
         }
 
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
