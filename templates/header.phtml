@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= $data['title'] ?></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+</head>
+<body>
+<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            Home
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu is-active">
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                <?php if(\classes\SessionWrapper::has('administrator')): ?>
+                    <a href="/admin" class="button is-primary"?>Admin panel</a>
+                <?php endif; ?>
+                <?php if (\classes\SessionWrapper::has('id')): ?>
+                    <a href="/profile" class="button is-primary"?><?= \classes\SessionWrapper::get('name') ?></a>
+                    <a href="/logout" class="button is-light"?>Logout</a>
+                <?php else: ?>
+                    <a href="/signup" class="button is-primary"><strong>Sign up</strong></a>
+                    <a href="/login" class="button is-light">Log in</a>
+                <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="mx-6">
+<?php if (\classes\SessionWrapper::has('notification')): ?>
+    <div class="notification is-warning is-light">
+        <h2><?= \classes\SessionWrapper::get('notification'); \classes\SessionWrapper::unset('notification'); ?></h2>
+    </div>
+<?php endif; ?>

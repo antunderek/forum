@@ -9,9 +9,9 @@ use classes\SessionWrapper;
 class SignupController extends Controller {
     public function index() {
         $homeview = new SignupView();
-        $homeview->renderPage('signup.php');
-        SessionWrapper::end('temp_data');
-        SessionWrapper::end('register_error');
+        $homeview->renderPage('signup');
+        SessionWrapper::unset('temp_data');
+        SessionWrapper::unset('register_error');
     }
 
     private function passDataToModel($postData) {

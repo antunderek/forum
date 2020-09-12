@@ -6,6 +6,7 @@ class SessionWrapper {
     public static function has($name, $key=null): bool {
         return !isset($key) ? isset($_SESSION[$name]) : isset($_SESSION[$name][$key]);
     }
+
     public static function get($name, $key=null) {
         if (!SessionWrapper::has($name)) {
             return;
@@ -20,7 +21,7 @@ class SessionWrapper {
         return $_SESSION[$name] = $value;
     }
 
-    public static function end($name) {
+    public static function unset($name) {
         if (self::has($name)) {
             unset($_SESSION[$name]);
         }

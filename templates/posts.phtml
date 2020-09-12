@@ -1,0 +1,69 @@
+<p>Posts</p>
+
+<table class="table" border="1">
+    <tr>
+        <th></th>
+        <th><?= $data['topic']->getDateCreated() ?></th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+
+    </tr>
+    <tr>
+        <td>
+            <?= $data['user']->getUsername() ?>
+            <br>
+            <figure class="image is-128x128">
+                <img src="<?= IMAGE_PATH . $data['user']->getImage() ?>">
+            </figure>
+        </td>
+        <td>
+            <b><?= $data['topic']->getName() ?></b>
+            <?= $data['topic']->getDescription() ?>
+        </td>
+        <?php if(\classes\SessionWrapper::has('administrator') || $data['user']->getId() === \classes\SessionWrapper::get('id')): ?>
+            <td><a href="/topic/edit?thread=<?= $data['topic']->getParent() ?>&topic=<?= $data['topic']->getId() ?>&action=update">Edit</a></td>
+        <?php endif; ?>
+    </tr>
+</table>
+
+<?php foreach($data['postsUsers'] as $postUser): ?>
+<table class="table" border="1">
+    <tr>
+        <th></th>
+        <th><?= $postUser['post']->getDatePosted() ?></th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>
+            <?= $postUser['user']->getUsername() ?>
+            <br>
+            <figure class="image is-128x128">
+                <img src="<?= IMAGE_PATH . $postUser['user']->getImage() ?>">
+            </figure>
+        </td>
+        <td><?= $postUser['post']->getContent() ?></td>
+        <?php if(\classes\SessionWrapper::has('administrator') || $postUser['post']->getUser() === \classes\SessionWrapper::get('id')): ?>
+            <td><a href="/post/edit?id=<?= $postUser['post']->getId() ?>">Edit</a></td>
+            <td><a href="/post/delete?id=<?= $postUser['post']->getId() ?>&user=<?= $postUser['post']->getUser() ?>&topic=<?= $data['topic']->getId() ?>">Delete</a></td>
+        <?php endif; ?>
+    </tr>
+</table>
+<?php endforeach; ?>
+
+<?php if(\classes\SessionWrapper::has('id')): ?>
+    <div>
+        <p>Write post:</p>
+        <form action="/post/create" method="POST">
+            <textarea maxlength="255" name="content"></textarea>
+            <input type="hidden" name="topic_id" value="<?= $data['topic']->getId() ?>">
+            <input type="hidden" name="user_id" value="<?= \classes\SessionWrapper::get('id') ?>">
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+<?php else: ?>
+    <p>You have to be logged in order to post.</p>
+<?php endif; ?>

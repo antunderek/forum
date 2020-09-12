@@ -9,9 +9,9 @@ use classes\SessionWrapper;
 class LoginController extends Controller {
     public function index() {
         $loginview = new LoginView();
-        $loginview->renderPage('signin.php');
-        SessionWrapper::end('temp_data');
-        SessionWrapper::end('login_error');
+        $loginview->renderPage('login');
+        SessionWrapper::unset('temp_data');
+        SessionWrapper::unset('login_error');
     }
 
     private function passDataToModel($postData) {

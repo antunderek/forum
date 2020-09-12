@@ -17,15 +17,15 @@ class AdminController extends Controller {
         $users = $this->getUsers();
         $data = ['threads' => $threads, 'users' => $users];
         $adminview = new AdminView();
-        $adminview->renderPage('admin.php', $data);
+        $adminview->renderPage('admin', $data);
     }
 
-    public function getDataFromModel() {
+    private function getDataFromModel() {
         $model = new ThreadModel($this->db);
         return $model->getAllThreads();
     }
 
-    public function getUsers() {
+    private function getUsers() {
         $model = new UserModel($this->db);
         return $model->getUsers();
     }

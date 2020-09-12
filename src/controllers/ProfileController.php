@@ -26,7 +26,7 @@ class ProfileController extends Controller
         }
         $adminview = new ProfileView();
         $user[] = $this->getDataFromModel();
-        $adminview->renderPage('profile.php', $user);
+        $adminview->renderPage('profile', $user);
     }
 
     private function getDataFromModel()
@@ -58,7 +58,8 @@ class ProfileController extends Controller
     }
 
     public function image() {
-        $image = new ImageUpload();
-        $image->upload();
+        $imgUpload = new ImageUpload();
+        $img = $imgUpload->upload();
+        $this->userModel->changeProfilePicture(SessionWrapper::get('id'), $img);
     }
 }

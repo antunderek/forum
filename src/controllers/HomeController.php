@@ -11,7 +11,7 @@ class HomeController extends Controller
     {
         $threads = $this->getThreads();
         $homeview = new HomeView();
-        $homeview->renderPage('home.php', $threads);
+        $homeview->renderPage('home', $threads);
     }
 
     public function getThreads() {

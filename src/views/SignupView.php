@@ -11,9 +11,11 @@ class SignupView extends View
 
     public function checkRegisterError()
     {
-        if (SessionWrapper::has('register_error')) {
-            return SessionWrapper::get('register_error');
-        }
+        return SessionWrapper::has('register_error');
+    }
+
+    public function getRegisterError() {
+        return SessionWrapper::get('register_error');
     }
 
     public function rememberedUsername()

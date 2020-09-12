@@ -1,6 +1,8 @@
 <?php
 
 namespace models;
+use classes\SessionWrapper;
+use MongoDB\Driver\Session;
 use PDO;
 
 use classes\ForumThread;
@@ -58,16 +60,17 @@ class ThreadModel extends Model {
 
     public function addNewThread($params) {
         if (!$this->dataValid($params)) {
-            echo 'Name is empty';
-            die();
+            SessionWrapper::set('notification', 'Thread name is not set.');
+            return;
         }
         $thread = new ForumThread($params['name'], $params['description']);
         if ($this->threadExsists($thread->getName())) {
-            echo 'Thread already exists';
-            die();
+            SessionWrapper::set('notification', 'Thread already exists.');
+            return;
         }
         $statement = $this->db->prepare('INSERT INTO threads (name, description) VALUES (:name, :description)');
         $statement->execute([':name' => $thread->getName(), ':description' => $thread->getDescription()]);
+        return;
     }
 
     public function editThread($params) {

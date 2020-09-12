@@ -53,12 +53,9 @@ class TopicModel extends Model {
     }
 
     public function getTopic($topicId) {
-        //$statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
         $statement = $this->db->prepare("
-            SELECT topics.name, topics.description, users.username AS user_id, topics.thread_id, topics.id, topics.created 
+            SELECT topics.name, topics.description, topics.user_id, topics.thread_id, topics.id, topics.created 
             FROM topics
-            INNER JOIN threads ON topics.thread_id = threads.id 
-            INNER JOIN users ON topics.user_id = users.id
             WHERE topics.id=:topicId
         ");
         $statement->execute([':topicId' => $topicId]);
@@ -92,8 +89,11 @@ class TopicModel extends Model {
         }
         $topic = $this->topicExsists($params['id']);
         if (!$topic) {
-            echo "404";
-            die();
+            header('Location: /pagenotfound');
+            exit;
+        }
+        if (($topic->getTopicCreator() !== SessionWrapper::get('id')) && !SessionWrapper::has('administrator')) {
+            return false;
         }
         $topic->setName($params['name']);
         $topic->setDescription($params['description']);
@@ -103,10 +103,16 @@ class TopicModel extends Model {
             ':description' => $topic->getDescription(),
             ':topic_id' => $params['id']
         ]);
+        return true;
     }
 
     public function removeTopic($topic_id) {
+        $topic = $this->getTopic($topic_id);
+        if (($topic->getTopicCreator() !== SessionWrapper::get('name')) && !SessionWrapper::get('administrator')) {
+            return false;
+        }
         $statement = $this->db->prepare("DELETE FROM topics WHERE id=:topic_id");
         $statement->execute([':topic_id' => $topic_id]);
+        return true;
     }
 }

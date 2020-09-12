@@ -29,9 +29,8 @@ class PostModel extends Model {
 
     public function getPosts($topicId) {
         $statement = $this->db->prepare(
-            "SELECT posts.topic_id, users.username AS user_id , posts.content, posts.id, posts.dateposted FROM posts 
-                      INNER JOIN users ON posts.user_id=users.id 
-                      WHERE topic_id = :topicId"
+            "SELECT posts.topic_id, posts.user_id , posts.content, posts.id, posts.dateposted FROM posts 
+                      WHERE posts.topic_id = :topicId ORDER BY posts.dateposted ASC"
         );
         $statement->execute([':topicId' => $topicId]);
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);

@@ -2,23 +2,29 @@
 
 namespace controllers;
 
+use classes\ParamsHandler;
+use PDO;
 use views\EditView;
 use models\ThreadModel;
 use classes\SessionWrapper;
 
 class ThreadController extends Controller {
-    //construct check if administrator add model to construct
-    public function index()
+
+    public function __construct(PDO $db)
     {
-        if (!isset($_GET['thread']) || !SessionWrapper::has('administrator')) {
-            echo 'here goes 404 controller';
-            die();
+        parent::__construct($db);
+        $this->checkIfAdmin();
+    }
+
+    public function edit()
+    {
+        if (!ParamsHandler::has('thread')) {
+            $this->redirectTo404();
         }
-        $name = $_GET['thread'];
+        $name = ParamsHandler::get('thread');
         $threads = $this->getDataFromModel($name);
         $editview = new EditView();
-        $editview->renderPage('editThread.php', $threads);
-        unset($_GET['thread']);
+        $editview->renderPage('editThread', $threads);
     }
 
     private function getDataFromModel($name) {
@@ -42,19 +48,27 @@ class ThreadController extends Controller {
     }
 
     public function update() {
-        $this->passUpdateData($this->paramshandler->retreiveData());
-        header('Location: /admin');
+        if (ParamsHandler::has('name')) {
+            $this->passUpdateData($this->paramshandler->retreiveData());
+            $this->redirect('/admin');
+        }
+        else {
+            $this->redirectTo404();
+        }
     }
 
     public function create() {
         $this->passCreateData($this->paramshandler->retreiveData());
-        header('Location: /admin');
+        $this->redirect('/admin');
     }
 
     public function delete() {
-        if (isset($_GET['thread'])) {
+        if (ParamsHandler::has('thread')) {
             $this->passDeleteData($this->paramshandler->retreiveData());
-            header('Location: /admin');
+            $this->redirect('/admin');
+        }
+        else {
+            $this->redirectTo404();
         }
     }
 }
