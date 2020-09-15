@@ -1,8 +1,9 @@
 <?php
 
 use core\App;
-require_once('../src/core/autoload.php');
-require_once('../config/config.php');
+require_once '../src/core/autoload.php';
+require_once '../config/config.php';
+
 
 session_start();
 

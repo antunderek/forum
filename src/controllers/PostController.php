@@ -3,6 +3,7 @@
 namespace controllers;
 
 use classes\SessionWrapper;
+use classes\ParamsHandler;
 use models\PostModel;
 use PDO;
 use views\PostView;
@@ -21,10 +22,10 @@ class PostController extends Controller {
     }
 
     public function edit() {
-        if (!isset($_GET['id'])) {
+        if (!ParamsHandler::has('id')) {
             $topics = [];
         } else {
-            $id = $_GET['id'];
+            $id = ParamsHandler::get('id');
             $post[] = $this->getPost($id);
             if ($post[0]->getUser() !== SessionWrapper::get('id') && !SessionWrapper::has('administrator')) {
                 $this->redirectTo404();
@@ -32,7 +33,6 @@ class PostController extends Controller {
         }
         $editview = new PostView();
         $editview->renderPage('editPost', $post);
-        unset($_GET['id']);
     }
 
     private function getPost($id) {
@@ -52,7 +52,7 @@ class PostController extends Controller {
 
     public function update() {
         $params = $this->paramshandler->retreiveData();
-        if (SessionWrapper::has('administrator') || SessionWrapper::get('id') === $params['user']) {
+        if (SessionWrapper::has('administrator') || (SessionWrapper::get('id') === $params['user'])) {
             $model = new PostModel($this->db);
             $model->updatePost($params);
             $this->redirect("/topic/posts?topic={$params['topic']}");
@@ -62,7 +62,7 @@ class PostController extends Controller {
 
     public function delete() {
         $params = $this->paramshandler->retreiveData();
-        if (SessionWrapper::has('administrator') || SessionWrapper::get('name') === $params['user']) {
+        if (SessionWrapper::has('administrator') || (SessionWrapper::get('id') === $params['user'])) {
             $model = new PostModel($this->db);
             $model->deletePost($params);
             $this->redirect("/topic/posts?topic={$params['topic']}");

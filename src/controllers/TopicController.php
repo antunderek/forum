@@ -1,15 +1,18 @@
 <?php
 
 namespace controllers;
+use PDO;
+
 use classes\ParamsHandler;
 use classes\SessionWrapper;
-use models\UserModel;
-use PDO;
 
 use views\TopicView;
 use views\PostView;
+
+use models\UserModel;
 use models\TopicModel;
 use models\PostModel;
+
 
 class TopicController extends Controller {
     protected $topicModel;
@@ -22,11 +25,10 @@ class TopicController extends Controller {
 
     public function index()
     {
-        if(!isset($_GET['thread'])) {
+        if (!ParamsHandler::has('thread')) {
             $this->redirectTo404();
-            header('Location: /');
         }
-        $thread = $_GET['thread'];
+        $thread = ParamsHandler::get('thread');
         $topics = $this->getThreadTopics($thread);
         $homeView = new TopicView();
         $homeView->renderPage('topics', $topics);
@@ -38,6 +40,9 @@ class TopicController extends Controller {
         }
         $topicId = $_GET['topic'];
         $topic = $this->getTopic($topicId);
+        if (!$topic) {
+            $this->redirectTo404();
+        }
         $user = $this->getTopicCreator($topic->getTopicCreator());
         $topicId = $topic->getId();
         if (!isset($topicId)) {

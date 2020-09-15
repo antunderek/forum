@@ -1,10 +1,10 @@
 <?php
 
 namespace models;
-use classes\SessionWrapper;
-use MongoDB\Driver\Session;
+
 use PDO;
 
+use classes\SessionWrapper;
 use classes\ForumThread;
 
 class ThreadModel extends Model {
@@ -14,8 +14,6 @@ class ThreadModel extends Model {
             return false;
         }
         if (!isset($postdata['name']) || empty(trim($postdata['name']))) {
-            var_dump(!isset($postdata['name']));
-            var_dump(empty(trim($postdata['name'])));
             return false;
         }
         return true;
@@ -44,6 +42,9 @@ class ThreadModel extends Model {
         ]);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $statement->fetch();
+        if (!$result) {
+            return false;
+        }
         $data[] = new ForumThread($result['name'], $result['description']);
         return $data;
     }
@@ -52,36 +53,33 @@ class ThreadModel extends Model {
         $statement = $this->db->prepare("SELECT id FROM threads WHERE name=:thread_name");
         $statement->execute([':thread_name' => $thread_name]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            return true;
-        }
-        return false;
+        return $result ? true : false;
     }
 
     public function addNewThread($params) {
         if (!$this->dataValid($params)) {
             SessionWrapper::set('notification', 'Thread name is not set.');
-            return;
+            return false;
         }
         $thread = new ForumThread($params['name'], $params['description']);
         if ($this->threadExsists($thread->getName())) {
             SessionWrapper::set('notification', 'Thread already exists.');
-            return;
+            return false;
         }
         $statement = $this->db->prepare('INSERT INTO threads (name, description) VALUES (:name, :description)');
         $statement->execute([':name' => $thread->getName(), ':description' => $thread->getDescription()]);
-        return;
+        return true;
     }
 
     public function editThread($params) {
         if (!$this->dataValid($params)) {
-            echo 'Name is empty';
-            die();
+            SessionWrapper::set('notification', 'Thread name is not set.');
+            return false;
         }
         $thread = new ForumThread($params['name'], $params['description']);
         if (!$this->threadExsists($params['original_thread'])) {
-            echo "404";
-            die();
+            header('Location: /pagenotfound');
+            exit;
         }
         $statement = $this->db->prepare('UPDATE threads SET name=:name, description=:description WHERE name=:original_thread');
         $statement->execute([

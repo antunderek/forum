@@ -21,8 +21,7 @@ class ProfileController extends Controller
     public function index()
     {
         if (!SessionWrapper::has('id')) {
-            echo "You have to log in to access this page";
-            die();
+            $this->redirectTo404();
         }
         $adminview = new ProfileView();
         $user[] = $this->getDataFromModel();

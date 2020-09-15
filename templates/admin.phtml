@@ -5,7 +5,6 @@
     <tr>
         <th>Thread</th>
         <th>Description</th>
-        <th>Subthreads</th>
         <th>Topics</th>
         <td>Posts</td>
         <td></td>
@@ -13,9 +12,8 @@
     </tr>
     <?php foreach ($data['threads'] as $thread):?>
         <tr>
-            <td><?= $thread->getName() ?></td>
+            <td><a href="topic/index?thread=<?= $thread->getName() ?>"><b><?= $thread->getName() ?></b></a></td>
             <td><?= $thread->getDescription() ?></td>
-            <td></td>
             <td></td>
             <td></td>
             <td><a href="/thread/edit?thread=<?= $thread->getName() ?>">Edit</a></td>

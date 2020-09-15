@@ -53,22 +53,13 @@ class TopicModel extends Model {
     }
 
     public function getTopic($topicId) {
-        $statement = $this->db->prepare("
-            SELECT topics.name, topics.description, topics.user_id, topics.thread_id, topics.id, topics.created 
-            FROM topics
-            WHERE topics.id=:topicId
-        ");
-        $statement->execute([':topicId' => $topicId]);
-        $topicArray = $statement->fetch(PDO::FETCH_ASSOC);
-        return new Topic($topicArray['name'], $topicArray['description'], $topicArray['user_id'], $topicArray['thread_id'], $topicArray['id'], $topicArray['created']);
-    }
-
-
-    private function topicExsists($topicId) {
         $statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
         $topicId = (int)$topicId;
         $statement->execute([':topic_id' => $topicId]);
         $topicArray = $statement->fetch(PDO::FETCH_ASSOC);
+        if (!$topicArray) {
+            return false;
+        }
         return new Topic($topicArray['name'], $topicArray['description'], $topicArray['user_id'], $topicArray['thread_id'], $topicArray['id'], $topicArray['created']);
     }
 
@@ -87,7 +78,7 @@ class TopicModel extends Model {
             echo 'Name is empty';
             die();
         }
-        $topic = $this->topicExsists($params['id']);
+        $topic = $this->getTopic($params['id']);
         if (!$topic) {
             header('Location: /pagenotfound');
             exit;

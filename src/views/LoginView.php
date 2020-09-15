@@ -3,7 +3,6 @@
 namespace views;
 
 use classes\SessionWrapper;
-use MongoDB\Driver\Session;
 
 class LoginView extends View {
     public function userLoggedIn() {

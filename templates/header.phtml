@@ -33,7 +33,7 @@
         </div>
     </div>
 </nav>
-<div class="mx-6">
+<div class="mx-6 my-6">
 <?php if (\classes\SessionWrapper::has('notification')): ?>
     <div class="notification is-warning is-light">
         <h2><?= \classes\SessionWrapper::get('notification'); \classes\SessionWrapper::unset('notification'); ?></h2>

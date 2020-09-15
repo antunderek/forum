@@ -1,15 +1,28 @@
-<?php foreach ($data as $thread):?>
-<table class="table" border="1">
+<?php if(empty($data)): ?>
+    <h1>There are currently no threads yet, check back later.</h1>
+<?php else: ?>
+
+<table class="table is-fullwidth" border="1">
     <tr>
         <th>Thread</th>
         <th>Description</th>
         <th>Topics</th>
         <th>Posts</th>
     </tr>
+<?php foreach ($data as $thread):?>
         <tr>
             <td><a href="topic/index?thread=<?= $thread->getName() ?>"><b><?= $thread->getName() ?></b></a></td>
             <td><?= $thread->getDescription() ?></td>
+            <td></td>
+            <td></td>
+            <?php if(\classes\SessionWrapper::has('administrator')): ?>
+                <td><a href="/thread/edit?thread=<?= $thread->getName() ?>">Edit</a></td>
+            <?php endif; ?>
         </tr>
-    </a>
-</table>
 <?php endforeach; ?>
+<?php endif; ?>
+</table>
+
+<?php if(\classes\SessionWrapper::has('administrator')): ?>
+    <a href="/thread/edit?thread=newthread&action=create"><button>Add thread</button></a>
+<?php endif; ?>

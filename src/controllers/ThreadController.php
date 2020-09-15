@@ -1,12 +1,11 @@
 <?php
 
 namespace controllers;
+use PDO;
 
 use classes\ParamsHandler;
-use PDO;
 use views\EditView;
 use models\ThreadModel;
-use classes\SessionWrapper;
 
 class ThreadController extends Controller {
 
@@ -23,6 +22,9 @@ class ThreadController extends Controller {
         }
         $name = ParamsHandler::get('thread');
         $threads = $this->getDataFromModel($name);
+        if (!$threads) {
+            $this->redirectTo404();
+        }
         $editview = new EditView();
         $editview->renderPage('editThread', $threads);
     }
@@ -39,7 +41,7 @@ class ThreadController extends Controller {
 
     private function passCreateData($params) {
         $model = new ThreadModel($this->db);
-        $model->addNewThread($params);
+        return $model->addNewThread($params);
     }
 
     private function passDeleteData($params) {
@@ -48,13 +50,8 @@ class ThreadController extends Controller {
     }
 
     public function update() {
-        if (ParamsHandler::has('name')) {
-            $this->passUpdateData($this->paramshandler->retreiveData());
-            $this->redirect('/admin');
-        }
-        else {
-            $this->redirectTo404();
-        }
+        $this->passUpdateData($this->paramshandler->retreiveData());
+        $this->redirect('/admin');
     }
 
     public function create() {

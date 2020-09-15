@@ -2,6 +2,8 @@
 
 namespace classes;
 
+require_once BP . 'vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+
 class ParamsHandler {
 
     private function typeMethod() {
@@ -14,8 +16,16 @@ class ParamsHandler {
         return null;
     }
 
+    private function purifyData($params) {
+        $config = \HTMLPurifier_Config::createDefault();
+        $purifier = new \HTMLPurifier($config);
+        return $purifier->purifyArray($params);
+    }
+
     public static function retreiveData() {
-        return (new ParamsHandler)->typeMethod();
+        $obj = new ParamsHandler();
+        $params = $obj->typeMethod();
+        return $obj->purifyData($params);
     }
 
     public static function get($name, $key = null) {
@@ -27,14 +37,6 @@ class ParamsHandler {
             return $data[$key][$name];
         }
         return $data[$name];
-    }
-
-    public static function has($name, $key = null) {
-        $data = self::retreiveData();
-        if (isset($key)) {
-            return isset($data[$key][$name]);
-        }
-        return isset($data[$name]);
     }
 
     public static function getSafe($name, $key = null) {
@@ -52,5 +54,25 @@ class ParamsHandler {
             return htmlspecialchars($data[$name], ENT_QUOTES, 'UTF-8');
         }
         return $data[$name];
+    }
+
+    public static function has($name, $key = null) {
+        $data = self::retreiveData();
+        if (isset($key)) {
+            return isset($data[$key][$name]);
+        }
+        return isset($data[$name]);
+    }
+
+    public static function unset($name, $key = null) {
+        if (self::has($name, $key)) {
+            $data = self::retreiveData();
+        }
+        if (isset($key)) {
+            unset($data[$key][$name]);
+        }
+        else {
+            unset($data[$name]);
+        }
     }
 }

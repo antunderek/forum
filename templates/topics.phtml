@@ -1,9 +1,9 @@
-<h1>Topics for <?= $_GET['thread'] ?></h1>
+<h1>Topics for <?= \classes\ParamsHandler::getSafe('thread') ?></h1>
 <?php if(\classes\SessionWrapper::has('id')): ?>
     <a href="/topic/edit?thread=<?= $_GET['thread'] ?>&topic=newtopic&action=create">Create new topic</a>
 <?php endif; ?>
 
-<table class="table" border="1">
+<table class="table is-fullwidth" border="1">
     <tr>
         <th>Topic</th>
         <th>Description</th>

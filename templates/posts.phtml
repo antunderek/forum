@@ -1,6 +1,4 @@
-<p>Posts</p>
-
-<table class="table" border="1">
+<table class="table is-fullwidth" >
     <tr>
         <th></th>
         <th><?= $data['topic']->getDateCreated() ?></th>
@@ -20,6 +18,7 @@
         </td>
         <td>
             <b><?= $data['topic']->getName() ?></b>
+            <br>
             <?= $data['topic']->getDescription() ?>
         </td>
         <?php if(\classes\SessionWrapper::has('administrator') || $data['user']->getId() === \classes\SessionWrapper::get('id')): ?>
@@ -27,6 +26,8 @@
         <?php endif; ?>
     </tr>
 </table>
+
+<p>Posts</p>
 
 <?php foreach($data['postsUsers'] as $postUser): ?>
 <table class="table" border="1">
@@ -65,5 +66,5 @@
         </form>
     </div>
 <?php else: ?>
-    <p>You have to be logged in order to post.</p>
+    <p>You have to be logged in, in order to post.</p>
 <?php endif; ?>
