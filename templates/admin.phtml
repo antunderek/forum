@@ -12,16 +12,16 @@
     </tr>
     <?php foreach ($data['threads'] as $thread):?>
         <tr>
-            <td><a href="topic/index?thread=<?= $thread->getName() ?>"><b><?= $thread->getName() ?></b></a></td>
+            <td><a href="topic/index?id=<?= $thread->getId() ?>&thread=<?= $thread->getName() ?>"><b><?= $thread->getName() ?></b></a></td>
             <td><?= $thread->getDescription() ?></td>
             <td></td>
             <td></td>
-            <td><a href="/thread/edit?thread=<?= $thread->getName() ?>">Edit</a></td>
-            <td><a href="/thread/delete?thread=<?= $thread->getName() ?>" onclick="return confirm('Are you sure you want to delete this thread')">Delete</a></td>
+            <td><a href="/thread/edit?id=<?= $thread->getId() ?>">Edit</a></td>
+            <td><a href="/thread/delete?id=<?= $thread->getId() ?>" onclick="return confirm('Are you sure you want to delete this thread')">Delete</a></td>
         </tr>
     <?php endforeach; ?>
 </table>
-<a href="/thread/edit?thread=newthread&action=create"><button>Add thread</button></a>
+<a href="/thread/edit?id=newthread&action=create"><button>Add thread</button></a>
 
 <h2>Users</h2>
 

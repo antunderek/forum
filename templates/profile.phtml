@@ -2,7 +2,7 @@
 
 <h2>Update profile:</h2>
 <figure class="image is-128x128">
-    <img src="<?= IMAGE_PATH . $this->getImage($data) ?>">
+    <img alt="user avatar" src="<?= IMAGE_PATH . $this->getImage($data) ?>">
 </figure>
 <form action="/profile/image" method="POST" enctype="multipart/form-data">
     <input type="file" name="image" id="image">
@@ -14,13 +14,13 @@
 <form action="/profile/update" method="POST">
     <label for="username">Username:</label>
     <br>
-    <input type="text" name="username" value="<?= $this->getUsername($data) ?>">
+    <input type="text" name="username" id="username" value="<?= $this->getUsername($data) ?>">
     <br>
     <label for="email">Email:</label>
     <br>
-    <input type="email" name="email" value="<?= $this->getEmail($data) ?>">
+    <input type="email" name="email" id="email" value="<?= $this->getEmail($data) ?>">
     <br>
-    <input type="submit">
+    <input type="submit" value="Submit">
 </form>
 
 <h3>Change password</h3>
@@ -31,7 +31,7 @@
     <br>
     <input type="password" name="check-password" placeholder="Re-type new password">
     <br>
-    <input type="submit">
+    <input type="submit" value="Submit">
 </form>
 
 <?php if(\classes\SessionWrapper::has('administrator')): ?>

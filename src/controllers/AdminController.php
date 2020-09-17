@@ -4,14 +4,13 @@ namespace controllers;
 
 use classes\SessionWrapper;
 use models\UserModel;
-use views\AdminView;
 use models\ThreadModel;
+use views\AdminView;
 
 class AdminController extends Controller {
     public function index() {
         if (!SessionWrapper::has('administrator')) {
-            echo '404 controller goes here';
-            die();
+            $this->redirectTo404();
         }
         $threads = $this->getDataFromModel();
         $users = $this->getUsers();

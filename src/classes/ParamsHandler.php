@@ -39,23 +39,6 @@ class ParamsHandler {
         return $data[$name];
     }
 
-    public static function getSafe($name, $key = null) {
-        if (!self::has($name, $key)) {
-            return;
-        }
-        $data = self::retreiveData();
-        if (isset($key)) {
-            if (is_string($data[$key][$name])) {
-                return htmlspecialchars($data[$key][$name], ENT_QUOTES, 'UTF-8');
-            }
-            return $data[$key][$name];
-        }
-        if (is_string($data[$name])) {
-            return htmlspecialchars($data[$name], ENT_QUOTES, 'UTF-8');
-        }
-        return $data[$name];
-    }
-
     public static function has($name, $key = null) {
         $data = self::retreiveData();
         if (isset($key)) {

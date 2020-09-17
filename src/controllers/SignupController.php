@@ -2,9 +2,9 @@
 
 namespace controllers;
 
-use views\SignupView;
-use models\UserModel;
 use classes\SessionWrapper;
+use models\UserModel;
+use views\SignupView;
 
 class SignupController extends Controller {
     public function index() {
@@ -27,9 +27,9 @@ class SignupController extends Controller {
     {
         $this->passDataToModel($this->getParams());
         if ($this->checkErrors()) {
-            header('Location: /signup');
+            $this->redirect('/signup');
         } else {
-            header('Location: /login');
+            $this->redirect('/login');
         }
     }
 }

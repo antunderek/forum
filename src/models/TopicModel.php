@@ -1,11 +1,10 @@
 <?php
 
 namespace models;
-use classes\SessionWrapper;
-use classes\Topic;
-
 use PDO;
 
+use classes\SessionWrapper;
+use classes\Topic;
 
 class TopicModel extends Model {
 
@@ -39,22 +38,21 @@ class TopicModel extends Model {
         return $this->createArrayOfTopics($topics_array);
     }
 
-    public function getThreadTopics($threadName) {
+    public function getThreadTopics($id) {
         $statement = $this->db->prepare("
             SELECT topics.name, topics.description, users.username AS user_id, topics.thread_id, topics.id, topics.created 
             FROM topics
             INNER JOIN threads ON topics.thread_id = threads.id 
             INNER JOIN users ON topics.user_id = users.id
-            WHERE threads.name=:thread_name
+            WHERE threads.id=:thread_id
         ");
-        $statement->execute([':thread_name' => $threadName]);
+        $statement->execute([':thread_id' => $id]);
         $topicsArray = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $this->createArrayOfTopics($topicsArray);
     }
 
     public function getTopic($topicId) {
         $statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
-        $topicId = (int)$topicId;
         $statement->execute([':topic_id' => $topicId]);
         $topicArray = $statement->fetch(PDO::FETCH_ASSOC);
         if (!$topicArray) {
@@ -67,10 +65,11 @@ class TopicModel extends Model {
         if (!$this->dataValid($params)) {
             echo 'Name is empty';
             die();
+            // set error message, redirect to last url user was on
         }
-        $thread = new Topic($params['name'], $params['description'], SessionWrapper::get('id'), $params['current_thread']);
-        $statement = $this->db->prepare('INSERT INTO topics (name, description, user_id, thread_id) VALUES (:name, :description, :user_id, (SELECT id FROM threads WHERE name=:thread_id ))');
-        $statement->execute([':name' => $thread->getName(), ':description' => $thread->getDescription(), ':user_id' => SessionWrapper::get('id'), ':thread_id' => $thread->getParent()]);
+        $topic = new Topic($params['name'], $params['description'], SessionWrapper::get('id'), $params['thread']);
+        $statement = $this->db->prepare('INSERT INTO topics (name, description, user_id, thread_id) VALUES (:name, :description, :user_id, :thread_id)');
+        $statement->execute([':name' => $topic->getName(), ':description' => $topic->getDescription(), ':user_id' => SessionWrapper::get('id'), ':thread_id' => $topic->getId()]);
     }
 
     public function editTopic($params) {
@@ -80,8 +79,7 @@ class TopicModel extends Model {
         }
         $topic = $this->getTopic($params['id']);
         if (!$topic) {
-            header('Location: /pagenotfound');
-            exit;
+            $this->redirectTo404();
         }
         if (($topic->getTopicCreator() !== SessionWrapper::get('id')) && !SessionWrapper::has('administrator')) {
             return false;

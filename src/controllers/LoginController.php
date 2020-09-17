@@ -2,9 +2,9 @@
 
 namespace controllers;
 
-use views\LoginView;
-use models\UserModel;
 use classes\SessionWrapper;
+use models\UserModel;
+use views\LoginView;
 
 class LoginController extends Controller {
     public function index() {
@@ -26,10 +26,10 @@ class LoginController extends Controller {
     public function signin() {
         $this->passDataToModel($this->getParams());
         if ($this->checkErrors()) {
-            header('Location: /login');
+            $this->redirect('/login');
         }
         else {
-            header('Location: /');
+            $this->redirect('/');
         }
     }
 }

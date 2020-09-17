@@ -1,7 +1,6 @@
 <?php
 
 namespace models;
-
 use PDO;
 
 use classes\SessionWrapper;
@@ -22,30 +21,31 @@ class ThreadModel extends Model {
     private function createArrayOfThreads($threads) {
         $threadArray = array();
         foreach($threads as $key => $thread) {
-            $threadArray[] = new ForumThread($thread['name'], $thread['description']);
+            $threadArray[] = new ForumThread($thread['name'], $thread['description'], $thread['id']);
         }
         return $threadArray;
     }
 
     public function getAllThreads() {
-        $statement = $this->db->prepare("SELECT name, description FROM threads");
+        $statement = $this->db->prepare("SELECT * FROM threads");
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
         $data= $this->createArrayOfThreads($data);
         return $data;
     }
 
-    public function getThread($name) {
-        $statement = $this->db->prepare("SELECT name, description FROM threads WHERE name=:name");
+    public function getThread($id) {
+        $statement = $this->db->prepare("SELECT * FROM threads WHERE id=:id");
         $statement->execute([
-            ':name' => $name
+            ':id' => $id
         ]);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $statement->fetch();
         if (!$result) {
             return false;
         }
-        $data[] = new ForumThread($result['name'], $result['description']);
+        //$data[] = new ForumThread($result['name'], $result['description'], $result['id']);
+        $data = new ForumThread($result['name'], $result['description'], $result['id']);
         return $data;
     }
 
@@ -78,8 +78,7 @@ class ThreadModel extends Model {
         }
         $thread = new ForumThread($params['name'], $params['description']);
         if (!$this->threadExsists($params['original_thread'])) {
-            header('Location: /pagenotfound');
-            exit;
+            $this->redirectTo404();
         }
         $statement = $this->db->prepare('UPDATE threads SET name=:name, description=:description WHERE name=:original_thread');
         $statement->execute([
@@ -89,8 +88,8 @@ class ThreadModel extends Model {
         ]);
     }
 
-    public function removeThread($name) {
-        $statement = $this->db->prepare("DELETE FROM threads WHERE name=:thread_name");
-        $statement->execute([':thread_name' => $name]);
+    public function removeThread($id) {
+        $statement = $this->db->prepare("DELETE FROM threads WHERE id=:id");
+        $statement->execute([':id' => $id]);
     }
 }

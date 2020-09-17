@@ -1,12 +1,12 @@
 <?php
 
 namespace controllers;
-use classes\SessionWrapper;
 use PDO;
 
-use classes\User;
-use models\UserModel;
+use classes\SessionWrapper;
 use classes\ParamsHandler;
+use models\UserModel;
+
 
 abstract class Controller
 {

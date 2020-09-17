@@ -11,6 +11,6 @@ class LogoutController extends Controller {
 
     public function logout() {
         SessionWrapper::destroy();
-        header('Location: /');
+        $this->redirect('/');
     }
 }

@@ -6,12 +6,13 @@ use PDO;
 use classes\ParamsHandler;
 use classes\SessionWrapper;
 
-use views\TopicView;
-use views\PostView;
-
 use models\UserModel;
 use models\TopicModel;
 use models\PostModel;
+use models\ThreadModel;
+
+use views\TopicView;
+use views\PostView;
 
 
 class TopicController extends Controller {
@@ -25,26 +26,28 @@ class TopicController extends Controller {
 
     public function index()
     {
-        if (!ParamsHandler::has('thread')) {
+        if (!ParamsHandler::has('id')) {
             $this->redirectTo404();
         }
-        $thread = ParamsHandler::get('thread');
+        $thread = ParamsHandler::get('id');
         $topics = $this->getThreadTopics($thread);
+        $thread = $this->getThread($thread);
+        $data = ['topics' => $topics, 'thread' => $thread];
         $homeView = new TopicView();
-        $homeView->renderPage('topics', $topics);
+        $homeView->renderPage('topics', $data);
     }
 
     public function posts() {
-        if (empty($_GET['topic'])) {
+        if (!ParamsHandler::has('topic')) {
             $this->redirectTo404();
         }
-        $topicId = $_GET['topic'];
+        $topicId = ParamsHandler::get('topic');
         $topic = $this->getTopic($topicId);
         if (!$topic) {
             $this->redirectTo404();
         }
         $user = $this->getTopicCreator($topic->getTopicCreator());
-        $topicId = $topic->getId();
+        $topicId = $topic->getTopicId();
         if (!isset($topicId)) {
             $this->redirectTo404();
         }
@@ -52,6 +55,11 @@ class TopicController extends Controller {
         $data = ['topic' => $topic, 'user' => $user, 'postsUsers' => $postsUsers];
         $postsView = new PostView();
         $postsView->renderPage('posts', $data);
+    }
+
+    private function getThread($id) {
+        $model = new ThreadModel($this->db);
+        return $model->getThread($id);
     }
 
     private function getAllTopics() {
@@ -91,12 +99,12 @@ class TopicController extends Controller {
         if (!$this->checkUser()) {
             $this->redirectTo404();
         }
-        if (!isset($_GET['topic']) || $_GET['topic'] === 'newtopic') {
+        if (!ParamsHandler::has('topic') || ParamsHandler::get('topic') === 'newtopic') {
             $topics = [];
         } else {
-            $id = $_GET['topic'];
+            $id = ParamsHandler::get('topic');
             $topics[] = $this->getDataFromModel($id);
-            if (($topics[0]->getTopicCreator() !== SessionWrapper::get('name')) && !SessionWrapper::has('administrator')) {
+            if (($topics[0]->getTopicCreator() !== SessionWrapper::get('id')) && !SessionWrapper::has('administrator')) {
                 $this->redirectTo404();
             }
         }
@@ -122,27 +130,27 @@ class TopicController extends Controller {
     }
 
     private function passDeleteData($params) {
-        return $this->topicModel->removeTopic($_GET['topic']);
+        return $this->topicModel->removeTopic(ParamsHandler::get('topic'));
     }
 
     public function update() {
         if (!$this->checkUser() && !SessionWrapper::get('administrator')) {
             $this->redirectTo404();
         }
-        $currentThread = ParamsHandler::getSafe('current_thread');
+        $currentThread = ParamsHandler::get('thread');
         if (!$this->passUpdateData($this->paramshandler->retreiveData())) {
             $this->redirectTo404();
         }
-        $this->redirect("/topic/index?thread={$currentThread}");
+        $this->redirect("/topic/index?id={$currentThread}");
     }
 
     public function create() {
         if (!$this->checkUser() && !SessionWrapper::get('administrator')) {
             $this->redirectTo404();
         }
-        $currentThread = $_POST['current_thread'];
+        $currentThread = ParamsHandler::get('thread');
         $this->passCreateData($this->paramshandler->retreiveData());
-        $this->redirect("/topic/index?thread={$currentThread}");
+        $this->redirect("/topic/index?id={$currentThread}");
     }
 
     public function delete() {
@@ -150,11 +158,11 @@ class TopicController extends Controller {
             $this->redirectTo404();
         }
         if (ParamsHandler::has('topic')) {
-            $currentThread = ParamsHandler::getSafe('thread');
+            $currentThread = ParamsHandler::get('thread');
             if (!$this->passDeleteData($this->paramshandler->retreiveData())) {
                 $this->redirectTo404();
             }
-            $this->redirect("/topic/index?thread={$currentThread}");
+            $this->redirect("/topic/index?id={$currentThread}");
         }
         else {
             $this->redirectTo404();

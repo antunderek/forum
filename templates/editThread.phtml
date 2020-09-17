@@ -3,11 +3,11 @@
 <form action="<?= $this->getActionName() ?>" method="POST">
     <label for="name">Name:</label>
     <br>
-    <input typeof="text" name="name" value="<?= $this->getThreadName($data) ?>">
+    <input typeof="text" name="name" id="name" value="<?= $this->getThreadName($data) ?>">
     <br>
-    <lable for="description">Description:</lable>
+    <label for="description">Description:</label>
     <br>
-    <textarea maxlength="255" name="description"><?= $this->getThreadDescription($data) ?></textarea>
+    <textarea maxlength="255" name="description" id="description"><?= $this->getThreadDescription($data) ?></textarea>
     <br>
     <input type="hidden" name="original_thread" value="<?= $this->getThreadName($data) ?>">
     <input type="submit">

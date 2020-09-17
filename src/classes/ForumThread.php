@@ -5,12 +5,12 @@ namespace classes;
 class ForumThread {
     protected $name;
     protected $description;
-    protected $parent;
+    protected $id;
 
-    public function __construct($name, $description, $parent = null) {
+    public function __construct($name, $description, $id = null) {
         $this->name = $name;
         $this->description = $description;
-        $this->parent = $parent;
+        $this->id = $id;
     }
 
     public function getName()
@@ -33,13 +33,13 @@ class ForumThread {
         $this->description = $description;
     }
 
-    public function getParent()
+    public function getId()
     {
-        return $this->parent;
+        return $this->id;
     }
 
-    public function setParent($parent): void
+    public function setId($id): void
     {
-        $this->parent = $parent;
+        $this->id = $id;
     }
 }

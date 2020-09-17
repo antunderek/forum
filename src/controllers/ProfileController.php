@@ -3,10 +3,13 @@
 namespace controllers;
 use PDO;
 
-use views\ProfileView;
-use models\UserModel;
 use classes\SessionWrapper;
 use classes\ImageUpload;
+
+use models\UserModel;
+
+use views\ProfileView;
+
 
 class ProfileController extends Controller
 {
@@ -33,7 +36,6 @@ class ProfileController extends Controller
         return $this->userModel->getUserById(SessionWrapper::get('id'));
     }
 
-    // Update user profile
     public function update() {
         $params = $this->paramshandler->retreiveData();
         $this->userModel->updateUsernameEmail(SessionWrapper::get('id'), $params);
@@ -44,15 +46,13 @@ class ProfileController extends Controller
         $this->userModel->changePassword(SessionWrapper::get('id'), $params);
     }
 
-    // Deletes user profile
     public function delete() {
         if (SessionWrapper::has('administrator') || SessionWrapper::has('id')) {
             $this->userModel->removeUser(SessionWrapper::get('id'));
-            header('Location: /logout');
+            $this->redirect('/logout');
         }
         else {
-            echo "You have to log in to access this page";
-            die();
+            $this->redirectTo404();
         }
     }
 

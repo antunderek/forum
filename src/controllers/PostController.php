@@ -1,12 +1,15 @@
 <?php
 
 namespace controllers;
+use PDO;
 
 use classes\SessionWrapper;
 use classes\ParamsHandler;
+
 use models\PostModel;
-use PDO;
+
 use views\PostView;
+
 
 class PostController extends Controller {
     public function __construct(PDO $db)
@@ -27,7 +30,7 @@ class PostController extends Controller {
         } else {
             $id = ParamsHandler::get('id');
             $post[] = $this->getPost($id);
-            if ($post[0]->getUser() !== SessionWrapper::get('id') && !SessionWrapper::has('administrator')) {
+            if (($post[0]->getUser() !== SessionWrapper::get('id')) && !SessionWrapper::has('administrator')) {
                 $this->redirectTo404();
             }
         }
@@ -42,7 +45,7 @@ class PostController extends Controller {
 
     public function create() {
         $params = $this->paramshandler->retreiveData();
-        if (SessionWrapper::has('administrator') || SessionWrapper::get('id') === $params['user_id']) {
+        if (SessionWrapper::has('administrator') || (SessionWrapper::get('id') === $params['user_id'])) {
             $model = new PostModel($this->db);
             $model->setPost($params);
             $this->redirect("/topic/posts?topic={$params['topic_id']}");

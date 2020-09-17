@@ -13,7 +13,7 @@
             <?= $data['user']->getUsername() ?>
             <br>
             <figure class="image is-128x128">
-                <img src="<?= IMAGE_PATH . $data['user']->getImage() ?>">
+                <img alt="user avatar" src="<?= IMAGE_PATH . $data['user']->getImage() ?>">
             </figure>
         </td>
         <td>
@@ -22,7 +22,7 @@
             <?= $data['topic']->getDescription() ?>
         </td>
         <?php if(\classes\SessionWrapper::has('administrator') || $data['user']->getId() === \classes\SessionWrapper::get('id')): ?>
-            <td><a href="/topic/edit?thread=<?= $data['topic']->getParent() ?>&topic=<?= $data['topic']->getId() ?>&action=update">Edit</a></td>
+            <td><a href="/topic/edit?thread=<?= $data['topic']->getId() ?>&topic=<?= $data['topic']->getTopicId() ?>&action=update">Edit</a></td>
         <?php endif; ?>
     </tr>
 </table>
@@ -48,7 +48,7 @@
         <td><?= $postUser['post']->getContent() ?></td>
         <?php if(\classes\SessionWrapper::has('administrator') || $postUser['post']->getUser() === \classes\SessionWrapper::get('id')): ?>
             <td><a href="/post/edit?id=<?= $postUser['post']->getId() ?>">Edit</a></td>
-            <td><a href="/post/delete?id=<?= $postUser['post']->getId() ?>&user=<?= $postUser['post']->getUser() ?>&topic=<?= $data['topic']->getId() ?>">Delete</a></td>
+            <td><a href="/post/delete?id=<?= $postUser['post']->getId() ?>&user=<?= $postUser['post']->getUser() ?>&topic=<?= $data['topic']->getTopicId() ?>">Delete</a></td>
         <?php endif; ?>
     </tr>
 </table>
@@ -59,10 +59,10 @@
         <p>Write post:</p>
         <form action="/post/create" method="POST">
             <textarea maxlength="255" name="content"></textarea>
-            <input type="hidden" name="topic_id" value="<?= $data['topic']->getId() ?>">
+            <input type="hidden" name="topic_id" value="<?= $data['topic']->getTopicId() ?>">
             <input type="hidden" name="user_id" value="<?= \classes\SessionWrapper::get('id') ?>">
             <br>
-            <input type="submit">
+            <input type="submit" value="Post">
         </form>
     </div>
 <?php else: ?>
