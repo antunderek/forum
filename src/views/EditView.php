@@ -5,8 +5,8 @@ namespace views;
 use classes\ParamsHandler;
 
 class EditView extends View {
-    public function getThreadName($data) {
-        return isset($data[0]) ? $data[0]->getName() : "";
+    public function getThreadId($data) {
+        return isset($data[0]) ? $data[0]->getId() : "";
     }
 
     public function getThreadDescription($data) {

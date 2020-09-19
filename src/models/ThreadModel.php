@@ -49,9 +49,16 @@ class ThreadModel extends Model {
         return $data;
     }
 
-    private function threadExsists($thread_name) {
+    private function threadNameExsists($thread_name) {
         $statement = $this->db->prepare("SELECT id FROM threads WHERE name=:thread_name");
         $statement->execute([':thread_name' => $thread_name]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result ? true : false;
+    }
+
+    private function threadExsists($thread_id) {
+        $statement = $this->db->prepare("SELECT id FROM threads WHERE id=:id");
+        $statement->execute([':id' => $thread_id]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         return $result ? true : false;
     }
@@ -61,11 +68,11 @@ class ThreadModel extends Model {
             SessionWrapper::set('notification', 'Thread name is not set.');
             return false;
         }
-        $thread = new ForumThread($params['name'], $params['description']);
-        if ($this->threadExsists($thread->getName())) {
+        if ($this->threadNameExsists($params['name'])) {
             SessionWrapper::set('notification', 'Thread already exists.');
             return false;
         }
+        $thread = new ForumThread($params['name'], $params['description']);
         $statement = $this->db->prepare('INSERT INTO threads (name, description) VALUES (:name, :description)');
         $statement->execute([':name' => $thread->getName(), ':description' => $thread->getDescription()]);
         return true;
@@ -76,10 +83,10 @@ class ThreadModel extends Model {
             SessionWrapper::set('notification', 'Thread name is not set.');
             return false;
         }
-        $thread = new ForumThread($params['name'], $params['description']);
         if (!$this->threadExsists($params['original_thread'])) {
             $this->redirectTo404();
         }
+        $thread = new ForumThread($params['name'], $params['description']);
         $statement = $this->db->prepare('UPDATE threads SET name=:name, description=:description WHERE name=:original_thread');
         $statement->execute([
             ':name' => $thread->getName(),
@@ -89,6 +96,9 @@ class ThreadModel extends Model {
     }
 
     public function removeThread($id) {
+        if (!$this->threadExsists($id)) {
+            $this->redirectTo404();
+        }
         $statement = $this->db->prepare("DELETE FROM threads WHERE id=:id");
         $statement->execute([':id' => $id]);
     }

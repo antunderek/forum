@@ -12,7 +12,7 @@
     </tr>
     <?php foreach ($data['threads'] as $thread):?>
         <tr>
-            <td><a href="topic/index?id=<?= $thread->getId() ?>&thread=<?= $thread->getName() ?>"><b><?= $thread->getName() ?></b></a></td>
+            <td><a href="topic/index?id=<?= $thread->getId() ?>"><b><?= $thread->getName() ?></b></a></td>
             <td><?= $thread->getDescription() ?></td>
             <td></td>
             <td></td>

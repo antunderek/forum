@@ -9,7 +9,7 @@
     <br>
     <textarea maxlength="255" name="description" id="description"><?= $this->getThreadDescription($data) ?></textarea>
     <br>
-    <input type="hidden" name="original_thread" value="<?= $this->getThreadName($data) ?>">
+    <input type="hidden" name="original_thread" value="<?= $this->getThreadId($data) ?>">
     <input type="submit">
 </form>
 

@@ -30,8 +30,11 @@ class TopicController extends Controller {
             $this->redirectTo404();
         }
         $thread = ParamsHandler::get('id');
-        $topics = $this->getThreadTopics($thread);
         $thread = $this->getThread($thread);
+        if (!$thread) {
+            $this->redirectTo404();
+        }
+        $topics = $this->getThreadTopics($thread->getId());
         $data = ['topics' => $topics, 'thread' => $thread];
         $homeView = new TopicView();
         $homeView->renderPage('topics', $data);
