@@ -1,12 +1,11 @@
 <?php
 
 namespace controllers;
+use PDO;
 
 use classes\ParamsHandler;
-use PDO;
-use views\EditView;
 use models\ThreadModel;
-use classes\SessionWrapper;
+use views\EditView;
 
 class ThreadController extends Controller {
 
@@ -22,14 +21,17 @@ class ThreadController extends Controller {
             $this->redirectTo404();
         }
         $name = ParamsHandler::get('thread');
-        $threads = $this->getDataFromModel($name);
+        $threads[] = $this->getDataFromModel($name);
+        if (!$threads[0]) {
+            $threads = array();
+        }
         $editview = new EditView();
         $editview->renderPage('editThread', $threads);
     }
 
-    private function getDataFromModel($name) {
+    private function getDataFromModel($id) {
         $model = new ThreadModel($this->db);
-        return $model->getThread($name);
+        return $model->getThread($id);
     }
 
     private function passUpdateData($params) {
@@ -39,22 +41,17 @@ class ThreadController extends Controller {
 
     private function passCreateData($params) {
         $model = new ThreadModel($this->db);
-        $model->addNewThread($params);
+        return $model->addNewThread($params);
     }
 
     private function passDeleteData($params) {
         $model = new ThreadModel($this->db);
-        $model->removeThread($_GET['thread']);
+        $model->removeThread(ParamsHandler::get('thread'));
     }
 
     public function update() {
-        if (ParamsHandler::has('name')) {
-            $this->passUpdateData($this->paramshandler->retreiveData());
-            $this->redirect('/admin');
-        }
-        else {
-            $this->redirectTo404();
-        }
+        $this->passUpdateData($this->paramshandler->retreiveData());
+        $this->redirect('/admin');
     }
 
     public function create() {

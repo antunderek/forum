@@ -4,7 +4,7 @@ namespace classes;
 
 class ImageUpload {
     public function upload() {
-        $targetFile = '/var/www/html/forum/public/img/' . basename($_FILES["image"]["name"]);
+        $targetFile = IMAGE_FULLPATH . basename($_FILES["image"]["name"]);
         $valid = true;
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 

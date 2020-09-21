@@ -1,8 +1,9 @@
 <?php
 
 namespace models;
-use classes\SessionWrapper;
 use PDO;
+
+use classes\SessionWrapper;
 use classes\Post;
 
 class PostModel extends Model {
@@ -46,10 +47,9 @@ class PostModel extends Model {
 
     public function setPost($params) {
         if (!$this->dataValid($params)) {
-            echo "here goes 404";
-            die();
+            $this->redirectTo404();
         }
-        $post = new Post($params['topic_id'], $params['user_id'], $params['content']);
+        $post = new Post($params['topic_id'], SessionWrapper::get('id'), $params['content']);
         $statement = $this->db->prepare("INSERT INTO posts(topic_id, user_id, content) VALUES (:topicId, :userId, :content)");
         $statement->execute([
             ':topicId' => $post->getTopic(),
@@ -61,17 +61,14 @@ class PostModel extends Model {
 
     public function updatePost($params) {
         if (!$this->dataValid($params)) {
-            echo "here goes 404";
-            die();
+            $this->redirectTo404();
         }
         $post = $this->getPost($params['id']);
         if (!$post) {
-            echo "404";
-            die();
+            $this->redirectTo404();
         }
         if ($post->getUser() !== $params['user'] && !SessionWrapper::has('administrator')) {
-            echo 'You are not allowed to make changes';
-            die();
+            $this->redirectTo404();
         }
         $post->setContent($params['content']);
         $statement = $this->db->prepare("UPDATE posts SET content=:content WHERE id=:postId");
@@ -83,17 +80,14 @@ class PostModel extends Model {
 
     public function deletePost($params) {
         if (!$this->dataValid($params)) {
-            echo "here goes 404";
-            die();
+            $this->redirectTo404();
         }
         $post = $this->getPost($params['id']);
         if (!$post) {
-            echo "404";
-            die();
+            $this->redirectTo404();
         }
         if (!SessionWrapper::has('administrator') && $post->getUser() !== SessionWrapper::get('id')) {
-            echo 'You are not allowed to make changes';
-            die();
+            $this->redirectTo404();
         }
         $post->setContent('Post has been deleted.');
         $statement = $this->db->prepare("UPDATE posts SET content=:content WHERE id=:postId");
@@ -105,13 +99,11 @@ class PostModel extends Model {
 
     public function removePost($params) {
         if (!$this->dataValid($params)) {
-            echo "here goes 404";
-            die();
+            $this->redirectTo404();
         }
         $post = $this->getPost($params['id']);
         if (!$post) {
-            echo "404";
-            die();
+            $this->redirectTo404();
         }
         $statement = $this->db->prepare("DELETE FROM posts WHERE id=:postId");
         $statement->execute([

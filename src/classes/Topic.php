@@ -6,13 +6,13 @@ class Topic extends ForumThread
 {
     protected $topicCreator;
     protected $dateCreated;
-    protected $id;
+    protected $topicId;
 
-    public function __construct($name, $description, $topicCreator, $parent_thread, $id = null, $dateCreated = null)
+    public function __construct($name, $description, $topicCreator, $parent_thread, $topicId = null, $dateCreated = null)
     {
         parent::__construct($name, $description, $parent_thread);
         $this->topicCreator = $topicCreator;
-        $this->id = $id;
+        $this->topicId = $topicId;
         $this->dateCreated = $dateCreated;
     }
 
@@ -36,14 +36,14 @@ class Topic extends ForumThread
         $this->dateCreated = $dateCreated;
     }
 
-    public function getId()
+    public function getTopicId()
     {
-        return $this->id;
+        return $this->topicId;
     }
 
-    public function setId($id): void
+    public function setTopicId($topicId): void
     {
-        $this->id = $id;
+        $this->topicId = $topicId;
 
     }
 }

@@ -1,10 +1,9 @@
 <?php
 
 namespace models;
-use classes\SessionWrapper;
-use MongoDB\Driver\Session;
 use PDO;
 
+use classes\SessionWrapper;
 use classes\ForumThread;
 
 class ThreadModel extends Model {
@@ -14,8 +13,6 @@ class ThreadModel extends Model {
             return false;
         }
         if (!isset($postdata['name']) || empty(trim($postdata['name']))) {
-            var_dump(!isset($postdata['name']));
-            var_dump(empty(trim($postdata['name'])));
             return false;
         }
         return true;
@@ -24,65 +21,71 @@ class ThreadModel extends Model {
     private function createArrayOfThreads($threads) {
         $threadArray = array();
         foreach($threads as $key => $thread) {
-            $threadArray[] = new ForumThread($thread['name'], $thread['description']);
+            $threadArray[] = new ForumThread($thread['name'], $thread['description'], $thread['id']);
         }
         return $threadArray;
     }
 
     public function getAllThreads() {
-        $statement = $this->db->prepare("SELECT name, description FROM threads");
+        $statement = $this->db->prepare("SELECT * FROM threads");
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
         $data= $this->createArrayOfThreads($data);
         return $data;
     }
 
-    public function getThread($name) {
-        $statement = $this->db->prepare("SELECT name, description FROM threads WHERE name=:name");
+    public function getThread($id) {
+        $statement = $this->db->prepare("SELECT * FROM threads WHERE id=:id");
         $statement->execute([
-            ':name' => $name
+            ':id' => $id
         ]);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $result = $statement->fetch();
-        $data[] = new ForumThread($result['name'], $result['description']);
+        if (!$result) {
+            return false;
+        }
+        $data = new ForumThread($result['name'], $result['description'], $result['id']);
         return $data;
     }
 
-    private function threadExsists($thread_name) {
+    private function threadNameExsists($thread_name) {
         $statement = $this->db->prepare("SELECT id FROM threads WHERE name=:thread_name");
         $statement->execute([':thread_name' => $thread_name]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            return true;
-        }
-        return false;
+        return $result ? true : false;
+    }
+
+    public function threadExsists(int $thread_id) {
+        $statement = $this->db->prepare("SELECT id FROM threads WHERE id=:id");
+        $statement->execute([':id' => $thread_id]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result ? true : false;
     }
 
     public function addNewThread($params) {
         if (!$this->dataValid($params)) {
             SessionWrapper::set('notification', 'Thread name is not set.');
-            return;
+            return false;
+        }
+        if ($this->threadNameExsists($params['name'])) {
+            SessionWrapper::set('notification', 'Thread already exists.');
+            return false;
         }
         $thread = new ForumThread($params['name'], $params['description']);
-        if ($this->threadExsists($thread->getName())) {
-            SessionWrapper::set('notification', 'Thread already exists.');
-            return;
-        }
         $statement = $this->db->prepare('INSERT INTO threads (name, description) VALUES (:name, :description)');
         $statement->execute([':name' => $thread->getName(), ':description' => $thread->getDescription()]);
-        return;
+        return true;
     }
 
     public function editThread($params) {
         if (!$this->dataValid($params)) {
-            echo 'Name is empty';
-            die();
+            SessionWrapper::set('notification', 'Thread name is not set.');
+            return false;
+        }
+        if (!$this->threadExsists($params['original_thread'])) {
+            $this->redirectTo404();
         }
         $thread = new ForumThread($params['name'], $params['description']);
-        if (!$this->threadExsists($params['original_thread'])) {
-            echo "404";
-            die();
-        }
         $statement = $this->db->prepare('UPDATE threads SET name=:name, description=:description WHERE name=:original_thread');
         $statement->execute([
             ':name' => $thread->getName(),
@@ -91,8 +94,11 @@ class ThreadModel extends Model {
         ]);
     }
 
-    public function removeThread($name) {
-        $statement = $this->db->prepare("DELETE FROM threads WHERE name=:thread_name");
-        $statement->execute([':thread_name' => $name]);
+    public function removeThread(int $id) {
+        if (!$this->threadExsists($id)) {
+            $this->redirectTo404();
+        }
+        $statement = $this->db->prepare("DELETE FROM threads WHERE id=:id");
+        $statement->execute([':id' => $id]);
     }
 }

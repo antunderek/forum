@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use views\HomeView;
 use models\ThreadModel;
+use views\HomeView;
 
 class HomeController extends Controller
 {
