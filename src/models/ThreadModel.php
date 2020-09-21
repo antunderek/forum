@@ -44,7 +44,6 @@ class ThreadModel extends Model {
         if (!$result) {
             return false;
         }
-        //$data[] = new ForumThread($result['name'], $result['description'], $result['id']);
         $data = new ForumThread($result['name'], $result['description'], $result['id']);
         return $data;
     }
@@ -56,7 +55,7 @@ class ThreadModel extends Model {
         return $result ? true : false;
     }
 
-    private function threadExsists($thread_id) {
+    private function threadExsists(int $thread_id) {
         $statement = $this->db->prepare("SELECT id FROM threads WHERE id=:id");
         $statement->execute([':id' => $thread_id]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
@@ -95,7 +94,7 @@ class ThreadModel extends Model {
         ]);
     }
 
-    public function removeThread($id) {
+    public function removeThread(int $id) {
         if (!$this->threadExsists($id)) {
             $this->redirectTo404();
         }

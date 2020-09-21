@@ -12,10 +12,9 @@
     <lable for="thread">Thread:</lable>
     <br>
     <input type="hidden" name="thread" value="<?= \classes\ParamsHandler::get('thread') ?>">
-    <input type="hidden" name="id" value="<?= \classes\ParamsHandler::get('topic') ?>">
 
     <?php if(!$this->isNewTopic()): ?>
-        <input type="hidden" name="original_topic" value="<?= $this->getTopicName($data) ?>">
+        <input type="hidden" name="id" value="<?= \classes\ParamsHandler::get('topic') ?>">
     <?php endif; ?>
 
     <input type="submit">

@@ -11,12 +11,12 @@
     </tr>
 <?php foreach ($data as $thread):?>
         <tr>
-            <td><a href="topic/index?id=<?= $thread->getId() ?>"><b><?= $thread->getName() ?></b></a></td>
+            <td><a href="topic/index?thread=<?= $thread->getId() ?>"><b><?= $thread->getName() ?></b></a></td>
             <td><?= $thread->getDescription() ?></td>
             <td></td>
             <td></td>
             <?php if(\classes\SessionWrapper::has('administrator')): ?>
-                <td><a href="/thread/edit?id=<?= $thread->getId() ?>">Edit</a></td>
+                <td><a href="/thread/edit?thread=<?= $thread->getId() ?>">Edit</a></td>
             <?php endif; ?>
         </tr>
 <?php endforeach; ?>
@@ -24,5 +24,5 @@
 </table>
 
 <?php if(\classes\SessionWrapper::has('administrator')): ?>
-    <a href="/thread/edit?id=newthread&action=create"><button>Add thread</button></a>
+    <a href="/thread/edit?thread=newthread&action=create"><button>Add thread</button></a>
 <?php endif; ?>

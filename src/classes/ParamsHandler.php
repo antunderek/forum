@@ -42,9 +42,11 @@ class ParamsHandler {
     public static function has($name, $key = null) {
         $data = self::retreiveData();
         if (isset($key)) {
-            return isset($data[$key][$name]);
+            //return isset($data[$key][$name]);
+            return !empty($data[$key][$name]);
         }
-        return isset($data[$name]);
+        //return isset($data[$name]);
+        return !empty($data[$name]);
     }
 
     public static function unset($name, $key = null) {

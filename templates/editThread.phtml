@@ -14,5 +14,5 @@
 </form>
 
 <?php if(!$this->isNewThread()): ?>
-    <a href="delete?thread=<?= $this->getThreadName($data) ?>&action=delete"><button>Delete thread</button></a>
+    <a href="delete?thread=<?= $this->getThreadId($data) ?>&action=delete"><button>Delete thread</button></a>
 <?php endif; ?>

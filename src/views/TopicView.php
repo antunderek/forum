@@ -4,6 +4,7 @@ namespace views;
 
 use classes\ParamsHandler;
 use classes\Topic;
+use http\Params;
 
 class TopicView extends View {
     public function getTopicName($data)
@@ -27,7 +28,7 @@ class TopicView extends View {
 
     public function isNewTopic()
     {
-        if (ParamsHandler::get('topic') === 'newtopic') {
+        if (!ParamsHandler::has('topic') || ParamsHandler::get('topic') === 'newtopic') {
             return true;
         }
         return false;
@@ -35,6 +36,9 @@ class TopicView extends View {
 
     public function getActionName()
     {
+        if (!ParamsHandler::has('topic')) {
+            return 'create';
+        }
         if (!ParamsHandler::has('action')) {
             return 'update';
         }

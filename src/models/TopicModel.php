@@ -97,7 +97,7 @@ class TopicModel extends Model {
 
     public function removeTopic($topic_id) {
         $topic = $this->getTopic($topic_id);
-        if (($topic->getTopicCreator() !== SessionWrapper::get('name')) && !SessionWrapper::get('administrator')) {
+        if (($topic->getTopicCreator() !== SessionWrapper::get('id')) && !SessionWrapper::get('administrator')) {
             return false;
         }
         $statement = $this->db->prepare("DELETE FROM topics WHERE id=:topic_id");

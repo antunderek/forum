@@ -17,10 +17,10 @@ class ThreadController extends Controller {
 
     public function edit()
     {
-        if (!ParamsHandler::has('id')) {
+        if (!ParamsHandler::has('thread')) {
             $this->redirectTo404();
         }
-        $name = ParamsHandler::get('id');
+        $name = ParamsHandler::get('thread');
         $threads[] = $this->getDataFromModel($name);
         if (!$threads[0]) {
             $threads = array();
@@ -46,7 +46,7 @@ class ThreadController extends Controller {
 
     private function passDeleteData($params) {
         $model = new ThreadModel($this->db);
-        $model->removeThread(ParamsHandler::get('id'));
+        $model->removeThread(ParamsHandler::get('thread'));
     }
 
     public function update() {
@@ -60,7 +60,7 @@ class ThreadController extends Controller {
     }
 
     public function delete() {
-        if (ParamsHandler::has('id')) {
+        if (ParamsHandler::has('thread')) {
             $this->passDeleteData($this->paramshandler->retreiveData());
             $this->redirect('/admin');
         }

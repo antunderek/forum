@@ -26,10 +26,10 @@ class TopicController extends Controller {
 
     public function index()
     {
-        if (!ParamsHandler::has('id')) {
+        if (!ParamsHandler::has('thread')) {
             $this->redirectTo404();
         }
-        $thread = ParamsHandler::get('id');
+        $thread = ParamsHandler::get('thread');
         $thread = $this->getThread($thread);
         if (!$thread) {
             $this->redirectTo404();
@@ -99,7 +99,7 @@ class TopicController extends Controller {
 
     public function edit()
     {
-        if (!$this->checkUser()) {
+        if (!$this->checkUser() || !ParamsHandler::has('thread')) {
             $this->redirectTo404();
         }
         if (!ParamsHandler::has('topic') || ParamsHandler::get('topic') === 'newtopic') {
@@ -144,7 +144,7 @@ class TopicController extends Controller {
         if (!$this->passUpdateData($this->paramshandler->retreiveData())) {
             $this->redirectTo404();
         }
-        $this->redirect("/topic/index?id={$currentThread}");
+        $this->redirect("/topic/index?thread={$currentThread}");
     }
 
     public function create() {
@@ -153,19 +153,19 @@ class TopicController extends Controller {
         }
         $currentThread = ParamsHandler::get('thread');
         $this->passCreateData($this->paramshandler->retreiveData());
-        $this->redirect("/topic/index?id={$currentThread}");
+        $this->redirect("/topic/index?thread={$currentThread}");
     }
 
     public function delete() {
         if (!$this->checkUser() && !SessionWrapper::get('administrator')) {
             $this->redirectTo404();
         }
-        if (ParamsHandler::has('topic')) {
+        if (ParamsHandler::has('topic') && ParamsHandler::has('thread')) {
             $currentThread = ParamsHandler::get('thread');
             if (!$this->passDeleteData($this->paramshandler->retreiveData())) {
                 $this->redirectTo404();
             }
-            $this->redirect("/topic/index?id={$currentThread}");
+            $this->redirect("/topic/index?thread={$currentThread}");
         }
         else {
             $this->redirectTo404();
