@@ -10,7 +10,7 @@
     </tr>
     <tr>
         <td>
-            <?= $data['user']->getUsername() ?>
+            <a href="/user/index?id=<?= $data['user']->getId() ?>"><?= $data['user']->getUsername() ?></a>
             <br>
             <figure class="image is-128x128">
                 <img alt="user avatar" src="<?= IMAGE_PATH . $data['user']->getImage() ?>">
@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td>
-            <?= $postUser['user']->getUsername() ?>
+            <a href="/user/index?id=<?= $postUser['user']->getId() ?>"><?= $postUser['user']->getUsername() ?></a>
             <br>
             <figure class="image is-128x128">
                 <img src="<?= IMAGE_PATH . $postUser['user']->getImage() ?>">

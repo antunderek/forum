@@ -37,7 +37,9 @@
     <?php foreach ($data['users'] as $user):?>
         <tr>
             <td><?= $user->getId() ?></td>
-            <td><?= $user->getUsername() ?></td>
+            <td>
+                <a href="/user/index?id=<?= $user->getId() ?>"><?= $user->getUsername() ?></a>
+            </td>
             <td><?= $user->getEmail() ?></td>
             <td>
                 <?php if($user->getAdministrator()): ?>

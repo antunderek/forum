@@ -1,6 +1,7 @@
 <?php
 
 namespace controllers;
+use classes\ParamsHandler;
 use PDO;
 
 use classes\SessionWrapper;
@@ -21,14 +22,21 @@ class ProfileController extends Controller
         $this->userModel = new UserModel($db);
     }
 
+    private function checkIfUser() {
+        if (SessionWrapper::has('id')) {
+            return true;
+        }
+        $this->redirectTo404();
+    }
+
     public function index()
     {
         if (!SessionWrapper::has('id')) {
             $this->redirectTo404();
         }
-        $adminview = new ProfileView();
+        $profileview = new ProfileView();
         $user[] = $this->getDataFromModel();
-        $adminview->renderPage('profile', $user);
+        $profileview->renderPage('profile', $user);
     }
 
     private function getDataFromModel()

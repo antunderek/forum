@@ -1,0 +1,23 @@
+<table class="table is-fullwidth" >
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+
+    </tr>
+    <tr>
+        <td>
+            <?= $data[0]->getUsername() ?>
+            <br>
+            <figure class="image is-128x128">
+                <img alt="user avatar" src="<?= IMAGE_PATH . $data[0]->getImage() ?>">
+            </figure>
+        </td>
+        <td></td>
+        <?php if(\classes\SessionWrapper::has('administrator') || $data[0]->getId() === \classes\SessionWrapper::get('id')): ?>
+        <?php endif; ?>
+    </tr>
+</table>
