@@ -60,7 +60,6 @@
         <form action="/post/create" method="POST">
             <textarea maxlength="255" name="content"></textarea>
             <input type="hidden" name="topic_id" value="<?= $data['topic']->getTopicId() ?>">
-            <input type="hidden" name="user_id" value="<?= \classes\SessionWrapper::get('id') ?>">
             <br>
             <input type="submit" value="Post">
         </form>

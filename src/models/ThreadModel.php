@@ -55,7 +55,7 @@ class ThreadModel extends Model {
         return $result ? true : false;
     }
 
-    private function threadExsists(int $thread_id) {
+    public function threadExsists(int $thread_id) {
         $statement = $this->db->prepare("SELECT id FROM threads WHERE id=:id");
         $statement->execute([':id' => $thread_id]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);

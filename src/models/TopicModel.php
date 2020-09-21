@@ -55,9 +55,9 @@ class TopicModel extends Model {
         $statement = $this->db->prepare("SELECT * FROM topics WHERE id=:topic_id");
         $statement->execute([':topic_id' => $topicId]);
         $topicArray = $statement->fetch(PDO::FETCH_ASSOC);
-        if (!$topicArray) {
-            return false;
-        }
+        //if (!$topicArray) {
+        //    return false;
+        //}
         return new Topic($topicArray['name'], $topicArray['description'], $topicArray['user_id'], $topicArray['thread_id'], $topicArray['id'], $topicArray['created']);
     }
 
@@ -78,9 +78,9 @@ class TopicModel extends Model {
             die();
         }
         $topic = $this->getTopic($params['id']);
-        if (!$topic) {
-            $this->redirectTo404();
-        }
+        //if (!$topic) {
+        //    return false;
+        //}
         if (($topic->getTopicCreator() !== SessionWrapper::get('id')) && !SessionWrapper::has('administrator')) {
             return false;
         }
@@ -97,6 +97,9 @@ class TopicModel extends Model {
 
     public function removeTopic($topic_id) {
         $topic = $this->getTopic($topic_id);
+        //if (!$topic) {
+        //    return false;
+        //}
         if (($topic->getTopicCreator() !== SessionWrapper::get('id')) && !SessionWrapper::get('administrator')) {
             return false;
         }

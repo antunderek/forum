@@ -26,13 +26,12 @@ class PostController extends Controller {
 
     public function edit() {
         if (!ParamsHandler::has('id')) {
-            $topics = [];
-        } else {
-            $id = ParamsHandler::get('id');
-            $post[] = $this->getPost($id);
-            if (($post[0]->getUser() !== SessionWrapper::get('id')) && !SessionWrapper::has('administrator')) {
-                $this->redirectTo404();
-            }
+            $this->redirectTo404();
+        }
+        $id = ParamsHandler::get('id');
+        $post[] = $this->getPost($id);
+        if (($post[0]->getUser() !== SessionWrapper::get('id')) && !SessionWrapper::has('administrator')) {
+            $this->redirectTo404();
         }
         $editview = new PostView();
         $editview->renderPage('editPost', $post);
@@ -44,18 +43,17 @@ class PostController extends Controller {
     }
 
     public function create() {
+        $this->checkIfUser();
         $params = $this->paramshandler->retreiveData();
-        if (SessionWrapper::has('administrator') || (SessionWrapper::get('id') === $params['user_id'])) {
-            $model = new PostModel($this->db);
-            $model->setPost($params);
-            $this->redirect("/topic/posts?topic={$params['topic_id']}");
-        }
+        $model = new PostModel($this->db);
+        $model->setPost($params);
+        $this->redirect("/topic/posts?topic={$params['topic_id']}");
         $this->redirectTo404();
     }
 
     public function update() {
-        $params = $this->paramshandler->retreiveData();
         if (SessionWrapper::has('administrator') || (SessionWrapper::get('id') === $params['user'])) {
+            $params = $this->paramshandler->retreiveData();
             $model = new PostModel($this->db);
             $model->updatePost($params);
             $this->redirect("/topic/posts?topic={$params['topic']}");
@@ -64,8 +62,8 @@ class PostController extends Controller {
     }
 
     public function delete() {
-        $params = $this->paramshandler->retreiveData();
         if (SessionWrapper::has('administrator') || (SessionWrapper::get('id') === $params['user'])) {
+            $params = $this->paramshandler->retreiveData();
             $model = new PostModel($this->db);
             $model->deletePost($params);
             $this->redirect("/topic/posts?topic={$params['topic']}");
@@ -76,8 +74,8 @@ class PostController extends Controller {
     }
 
     public function remove() {
-        $params = $this->paramshandler->retreiveData();
         if (SessionWrapper::has('administrator')) {
+            $params = $this->paramshandler->retreiveData();
             $model = new PostModel($this->db);
             $model->removePost($params);
             $this->redirect("/topic/posts?topic={$params['topic_id']}");

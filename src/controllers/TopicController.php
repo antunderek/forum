@@ -1,6 +1,7 @@
 <?php
 
 namespace controllers;
+use http\Params;
 use PDO;
 
 use classes\ParamsHandler;
@@ -46,9 +47,9 @@ class TopicController extends Controller {
         }
         $topicId = ParamsHandler::get('topic');
         $topic = $this->getTopic($topicId);
-        if (!$topic) {
-            $this->redirectTo404();
-        }
+        //if (!$topic) {
+        //    $this->redirectTo404();
+        //}
         $user = $this->getTopicCreator($topic->getTopicCreator());
         $topicId = $topic->getTopicId();
         if (!isset($topicId)) {
@@ -102,11 +103,15 @@ class TopicController extends Controller {
         if (!$this->checkUser() || !ParamsHandler::has('thread')) {
             $this->redirectTo404();
         }
+        $this->threadExists(ParamsHandler::get('thread'));
         if (!ParamsHandler::has('topic') || ParamsHandler::get('topic') === 'newtopic') {
             $topics = [];
         } else {
             $id = ParamsHandler::get('topic');
             $topics[] = $this->getDataFromModel($id);
+            if (!$topics[0]) {
+                $this->redirectTo404();
+            }
             if (($topics[0]->getTopicCreator() !== SessionWrapper::get('id')) && !SessionWrapper::has('administrator')) {
                 $this->redirectTo404();
             }
@@ -114,6 +119,13 @@ class TopicController extends Controller {
 
         $editview = new TopicView();
         $editview->renderPage('editTopic', $topics);
+    }
+
+    private function threadExists($id) {
+        $model = new ThreadModel($this->db);
+        if (!$model->threadExsists($id)) {
+            $this->redirectTo404();
+        }
     }
 
     private function checkUser() {

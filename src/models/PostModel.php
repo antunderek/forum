@@ -49,7 +49,7 @@ class PostModel extends Model {
         if (!$this->dataValid($params)) {
             $this->redirectTo404();
         }
-        $post = new Post($params['topic_id'], $params['user_id'], $params['content']);
+        $post = new Post($params['topic_id'], SessionWrapper::get('id'), $params['content']);
         $statement = $this->db->prepare("INSERT INTO posts(topic_id, user_id, content) VALUES (:topicId, :userId, :content)");
         $statement->execute([
             ':topicId' => $post->getTopic(),
